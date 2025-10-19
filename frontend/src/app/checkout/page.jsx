@@ -3,7 +3,9 @@
 import { useState, useEffect } from 'react';
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, CreditCard, CheckCircle } from 'lucide-react';
+import { CreditCard, CheckCircle } from 'lucide-react';
+import Navigation from '../../components/Navigation';
+import Footer from '../../components/Footer';
 
 export default function CheckoutPage() {
   const [cart, setCart] = useState([]);
@@ -107,22 +109,7 @@ export default function CheckoutPage() {
   if (orderSuccess) {
     return (
       <div className="min-h-screen bg-slate-900 text-white">
-        <header className="bg-slate-800 border-b border-slate-700">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center h-16">
-              <Link href="/" className="flex items-center space-x-2">
-                <Image
-                  src="/logo.svg"
-                  alt="PCMarket"
-                  width={40}
-                  height={40}
-                  className="h-10 w-auto"
-                />
-                <span className="text-xl font-bold text-blue-400">PCMarket</span>
-              </Link>
-            </div>
-          </div>
-        </header>
+        <Navigation />
 
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="text-center">
@@ -150,6 +137,9 @@ export default function CheckoutPage() {
               </Link>
             </div>
           </div>
+
+          {/* Footer */}
+          <Footer />
         </div>
       </div>
     );
@@ -158,22 +148,7 @@ export default function CheckoutPage() {
   if (cart.length === 0) {
     return (
       <div className="min-h-screen bg-slate-900 text-white">
-        <header className="bg-slate-800 border-b border-slate-700">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center h-16">
-              <Link href="/" className="flex items-center space-x-2">
-                <Image
-                  src="/logo.svg"
-                  alt="PCMarket"
-                  width={40}
-                  height={40}
-                  className="h-10 w-auto"
-                />
-                <span className="text-xl font-bold text-blue-400">PCMarket</span>
-              </Link>
-            </div>
-          </div>
-        </header>
+        <Navigation />
 
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="text-center">
@@ -188,6 +163,9 @@ export default function CheckoutPage() {
               Перейти к каталогу
             </Link>
           </div>
+
+          {/* Footer */}
+          <Footer />
         </div>
       </div>
     );
@@ -196,32 +174,7 @@ export default function CheckoutPage() {
   return (
     <div className="min-h-screen bg-slate-900 text-white">
       {/* Header */}
-      <header className="bg-slate-800 border-b border-slate-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <Link href="/" className="flex items-center space-x-2">
-              <Image
-                src="/logo.svg"
-                alt="PCMarket"
-                width={40}
-                height={40}
-                className="h-10 w-auto"
-              />
-              <span className="text-xl font-bold text-blue-400">PCMarket</span>
-            </Link>
-
-            <div className="flex items-center space-x-4">
-              <Link
-                href="/cart"
-                className="flex items-center text-white hover:text-blue-400 transition-colors"
-              >
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Назад к корзине
-              </Link>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Navigation />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
@@ -390,6 +343,9 @@ export default function CheckoutPage() {
           </div>
         </div>
       </div>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

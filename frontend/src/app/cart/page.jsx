@@ -3,7 +3,9 @@
 import { useState, useEffect } from 'react';
 import Image from "next/image";
 import Link from "next/link";
-import { ShoppingCart, Trash2, Plus, Minus, ArrowLeft, CreditCard } from 'lucide-react';
+import { ShoppingCart, Trash2, Plus, Minus, CreditCard } from 'lucide-react';
+import Navigation from '../../components/Navigation';
+import Footer from '../../components/Footer';
 
 export default function CartPage() {
   const [cart, setCart] = useState([]);
@@ -60,32 +62,7 @@ export default function CartPage() {
     return (
       <div className="min-h-screen bg-slate-900 text-white">
         {/* Header */}
-        <header className="bg-slate-800 border-b border-slate-700">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center h-16">
-              <Link href="/" className="flex items-center space-x-2">
-                <Image
-                  src="/logo.svg"
-                  alt="PCMarket"
-                  width={40}
-                  height={40}
-                  className="h-10 w-auto"
-                />
-                <span className="text-xl font-bold text-blue-400">PCMarket</span>
-              </Link>
-
-              <div className="flex items-center space-x-4">
-                <Link
-                  href="/"
-                  className="flex items-center text-white hover:text-blue-400 transition-colors"
-                >
-                  <ArrowLeft className="h-4 w-4 mr-2" />
-                  На главную
-                </Link>
-              </div>
-            </div>
-          </div>
-        </header>
+        <Navigation cart={cart} />
 
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="text-center">
@@ -102,6 +79,9 @@ export default function CartPage() {
             </Link>
           </div>
         </div>
+
+        {/* Footer */}
+        <Footer />
       </div>
     );
   }
@@ -109,32 +89,7 @@ export default function CartPage() {
   return (
     <div className="min-h-screen bg-slate-900 text-white">
       {/* Header */}
-      <header className="bg-slate-800 border-b border-slate-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <Link href="/" className="flex items-center space-x-2">
-              <Image
-                src="/logo.svg"
-                alt="PCMarket"
-                width={40}
-                height={40}
-                className="h-10 w-auto"
-              />
-              <span className="text-xl font-bold text-blue-400">PCMarket</span>
-            </Link>
-
-            <div className="flex items-center space-x-4">
-              <Link
-                href="/"
-                className="flex items-center text-white hover:text-blue-400 transition-colors"
-              >
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                На главную
-              </Link>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Navigation cart={cart} />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
@@ -265,6 +220,9 @@ export default function CartPage() {
           </div>
         </div>
       </div>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

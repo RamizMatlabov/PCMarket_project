@@ -2,38 +2,15 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeft, Users, Award, Target, Heart, Shield, Clock, Star } from 'lucide-react';
+import { Users, Award, Target, Heart, Shield, Clock, Star } from 'lucide-react';
+import Navigation from '../../components/Navigation';
+import Footer from '../../components/Footer';
 
 export default function AboutPage() {
   return (
     <div className="min-h-screen bg-slate-900 text-white">
       {/* Header */}
-      <header className="bg-slate-800 border-b border-slate-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <Link href="/" className="flex items-center space-x-2">
-              <Image
-                src="/logo.svg"
-                alt="PCMarket"
-                width={40}
-                height={40}
-                className="h-10 w-auto"
-              />
-              <span className="text-xl font-bold text-blue-400">PCMarket</span>
-            </Link>
-
-            <div className="flex items-center space-x-4">
-              <Link
-                href="/"
-                className="flex items-center text-white hover:text-blue-400 transition-colors"
-              >
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                На главную
-              </Link>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Navigation />
 
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-slate-900 via-blue-900 to-slate-900 py-20">
@@ -252,54 +229,7 @@ export default function AboutPage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-slate-800 border-t border-slate-700 py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center space-x-2 mb-4">
-                <Image
-                  src="/logo.svg"
-                  alt="PCMarket"
-                  width={32}
-                  height={32}
-                  className="h-8 w-auto"
-                />
-                <span className="text-xl font-bold text-blue-400">PCMarket</span>
-              </div>
-              <p className="text-slate-300">
-                Ваш надежный партнер в мире компьютерных технологий
-              </p>
-            </div>
-            <div>
-              <h4 className="text-lg font-semibold mb-4">Каталог</h4>
-              <ul className="space-y-2 text-slate-300">
-                <li><Link href="/products?type=computer" className="hover:text-blue-400 transition-colors">Компьютеры</Link></li>
-                <li><Link href="/products?type=component" className="hover:text-blue-400 transition-colors">Комплектующие</Link></li>
-                <li><Link href="/products?type=accessory" className="hover:text-blue-400 transition-colors">Аксессуары</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-lg font-semibold mb-4">Поддержка</h4>
-              <ul className="space-y-2 text-slate-300">
-                <li><Link href="/help" className="hover:text-blue-400 transition-colors">Помощь</Link></li>
-                <li><Link href="/warranty" className="hover:text-blue-400 transition-colors">Гарантия</Link></li>
-                <li><Link href="/delivery" className="hover:text-blue-400 transition-colors">Доставка</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-lg font-semibold mb-4">Контакты</h4>
-              <ul className="space-y-2 text-slate-300">
-                <li>+998(33)433-44-04</li>
-                <li>info@pcmarket.uz</li>
-                <li>Samarkand, Amir Temur street, 123</li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-slate-700 mt-8 pt-8 text-center text-slate-400">
-            <p>&copy; 2024 PCMarket. Все права защищены.</p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

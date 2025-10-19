@@ -4,7 +4,9 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Image from "next/image";
 import Link from "next/link";
-import { ShoppingCart, Search, Filter, Star, ArrowLeft } from 'lucide-react';
+import { Search, Filter, Star } from 'lucide-react';
+import Navigation from '../../components/Navigation';
+import Footer from '../../components/Footer';
 
 export default function ProductsPage() {
   const [products, setProducts] = useState([]);
@@ -81,49 +83,7 @@ export default function ProductsPage() {
   return (
     <div className="min-h-screen bg-slate-900 text-white">
       {/* Header */}
-      <header className="bg-slate-800 border-b border-slate-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <Link href="/" className="flex items-center space-x-2">
-              <Image
-                src="/logo.svg"
-                alt="PCMarket"
-                width={40}
-                height={40}
-                className="h-10 w-auto"
-              />
-              <span className="text-xl font-bold text-blue-400">PCMarket</span>
-            </Link>
-
-            <div className="flex items-center space-x-4">
-              <Link
-                href="/"
-                className="flex items-center text-white hover:text-blue-400 transition-colors"
-              >
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                На главную
-              </Link>
-              <Link href="/about" className="text-white hover:text-blue-400 transition-colors">
-                О нас
-              </Link>
-              <Link href="/contact" className="text-white hover:text-blue-400 transition-colors">
-                Контакты
-              </Link>
-              <Link href="/help" className="text-white hover:text-blue-400 transition-colors">
-                Помощь
-              </Link>
-              <button className="relative p-2 text-white hover:text-blue-400 transition-colors">
-                <ShoppingCart className="h-6 w-6" />
-                {cart.length > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                    {cart.length}
-                  </span>
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
+      <Navigation cart={cart} />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
@@ -299,6 +259,9 @@ export default function ProductsPage() {
           </div>
         </div>
       </div>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }
