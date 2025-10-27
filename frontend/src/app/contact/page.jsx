@@ -193,7 +193,7 @@ export default function ContactPage() {
                         value={formData.phone}
                         onChange={handleInputChange}
                         className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        placeholder="+7 (999) 123-45-67"
+                        placeholder="+998 (99) 123-45-67"
                       />
                     </div>
                     <div>
