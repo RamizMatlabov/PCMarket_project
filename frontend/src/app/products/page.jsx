@@ -85,11 +85,11 @@ export default function ProductsPage() {
       {/* Header */}
       <Navigation cart={cart} />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex flex-col lg:flex-row gap-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 md:py-8">
+        <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 md:gap-8">
           {/* Sidebar Filters */}
           <div className="lg:w-1/4">
-            <div className="bg-slate-800 rounded-lg p-6 sticky top-8">
+            <div className="bg-slate-800 rounded-lg p-4 sm:p-5 md:p-6 lg:sticky lg:top-8">
               <h3 className="text-lg font-semibold mb-4 flex items-center">
                 <Filter className="h-5 w-5 mr-2" />
                 Фильтры
@@ -168,15 +168,15 @@ export default function ProductsPage() {
 
           {/* Products Grid */}
           <div className="lg:w-3/4">
-            <div className="mb-6">
-              <h1 className="text-3xl font-bold mb-2">Каталог товаров</h1>
-              <p className="text-slate-300">
+            <div className="mb-4 sm:mb-5 md:mb-6">
+              <h1 className="text-2xl sm:text-3xl font-bold mb-2">Каталог товаров</h1>
+              <p className="text-slate-300 text-sm sm:text-base">
                 Найдено товаров: {products.length}
               </p>
             </div>
 
             {loading ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
                 {[...Array(6)].map((_, i) => (
                   <div key={i} className="bg-slate-800 rounded-lg p-6 animate-pulse">
                     <div className="bg-slate-700 h-48 rounded-lg mb-4"></div>
@@ -187,7 +187,7 @@ export default function ProductsPage() {
                 ))}
               </div>
             ) : products.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
                 {products.map((product) => (
                   <div key={product.id} className="bg-slate-800 rounded-lg overflow-hidden hover:bg-slate-700 transition-colors">
                     <div className="aspect-w-16 aspect-h-9 bg-slate-700">
@@ -197,37 +197,37 @@ export default function ProductsPage() {
                           alt={product.name}
                           width={300}
                           height={200}
-                          className="w-full h-48 object-cover"
+                          className="w-full h-40 sm:h-44 md:h-48 object-cover"
                         />
                       ) : (
-                        <div className="w-full h-48 bg-slate-700 flex items-center justify-center">
-                          <span className="text-slate-400">Нет изображения</span>
+                        <div className="w-full h-40 sm:h-44 md:h-48 bg-slate-700 flex items-center justify-center">
+                          <span className="text-slate-400 text-xs sm:text-sm">Нет изображения</span>
                         </div>
                       )}
                     </div>
-                    <div className="p-6">
-                      <div className="flex items-center justify-between mb-2">
+                    <div className="p-4 sm:p-5 md:p-6">
+                      <div className="flex items-center justify-between mb-2 flex-wrap gap-1 sm:gap-2">
                         <span className="text-xs bg-blue-600 text-white px-2 py-1 rounded">
                           {product.product_type === 'computer' ? 'Компьютер' : 
                            product.product_type === 'component' ? 'Комплектующее' : 'Аксессуар'}
                         </span>
                         <span className="text-xs text-slate-400">{product.category.name}</span>
                       </div>
-                      <h3 className="text-lg font-semibold mb-2 line-clamp-2">{product.name}</h3>
-                      <p className="text-slate-400 text-sm mb-3">{product.brand} {product.model}</p>
-                      <div className="flex items-center justify-between mb-4">
-                        <span className="text-2xl font-bold text-blue-400">
+                      <h3 className="text-base sm:text-lg font-semibold mb-2 line-clamp-2">{product.name}</h3>
+                      <p className="text-slate-400 text-xs sm:text-sm mb-2 sm:mb-3">{product.brand} {product.model}</p>
+                      <div className="flex items-center justify-between mb-3 sm:mb-4">
+                        <span className="text-lg sm:text-xl md:text-2xl font-bold text-blue-400">
                           {product.price} USD
                         </span>
                         <div className="flex items-center text-yellow-400">
-                          <Star className="h-4 w-4 fill-current" />
-                          <span className="ml-1 text-sm">4.8</span>
+                          <Star className="h-3 w-3 sm:h-4 sm:w-4 fill-current" />
+                          <span className="ml-1 text-xs sm:text-sm">4.8</span>
                         </div>
                       </div>
                       <button
                         onClick={() => addToCart(product)}
                         disabled={!product.is_in_stock}
-                        className={`w-full py-2 px-4 rounded-lg font-semibold transition-colors ${
+                        className={`w-full py-2 sm:py-2.5 px-3 sm:px-4 rounded-lg font-semibold transition-colors text-sm sm:text-base ${
                           product.is_in_stock
                             ? 'bg-blue-600 hover:bg-blue-700 text-white'
                             : 'bg-slate-500 text-slate-300 cursor-not-allowed'
@@ -240,16 +240,16 @@ export default function ProductsPage() {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-12">
-                <div className="bg-slate-800 rounded-lg p-8">
-                  <Search className="h-16 w-16 text-slate-400 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold mb-2">Товары не найдены</h3>
-                  <p className="text-slate-300 mb-4">
+              <div className="text-center py-8 sm:py-10 md:py-12 px-4">
+                <div className="bg-slate-800 rounded-lg p-6 sm:p-8">
+                  <Search className="h-12 w-12 sm:h-16 sm:w-16 text-slate-400 mx-auto mb-3 sm:mb-4" />
+                  <h3 className="text-lg sm:text-xl font-semibold mb-2">Товары не найдены</h3>
+                  <p className="text-slate-300 mb-4 text-sm sm:text-base">
                     Попробуйте изменить параметры поиска или фильтры
                   </p>
                   <button
                     onClick={clearFilters}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors"
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-5 sm:px-6 py-2 rounded-lg transition-colors text-sm sm:text-base"
                   >
                     Сбросить фильтры
                   </button>

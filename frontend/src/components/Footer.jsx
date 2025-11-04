@@ -3,9 +3,9 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="bg-slate-800 border-t border-slate-700 py-12">
+    <footer className="bg-slate-800 border-t border-slate-700 py-8 sm:py-10 md:py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
           <div>
             <div className="flex items-center space-x-2 mb-4">
               <Image
@@ -46,7 +46,7 @@ export default function Footer() {
             </ul>
           </div>
         </div>
-        <div className="border-t border-slate-700 mt-8 pt-8 text-center text-slate-400">
+        <div className="border-t border-slate-700 mt-6 sm:mt-8 pt-6 sm:pt-8 text-center text-slate-400 text-sm sm:text-base">
           <p>&copy; 2024 PCMarket. Все права защищены.</p>
         </div>
       </div>

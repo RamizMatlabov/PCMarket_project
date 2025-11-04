@@ -13,13 +13,13 @@ export default function AboutPage() {
       <Navigation />
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-slate-900 via-blue-900 to-slate-900 py-20">
+      <section className="bg-gradient-to-r from-slate-900 via-blue-900 to-slate-900 py-12 sm:py-16 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="text-4xl md:text-6xl font-bold mb-6">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 px-2">
               О компании <span className="text-blue-400">PCMarket</span>
             </h1>
-            <p className="text-xl md:text-2xl text-slate-300 mb-8 max-w-3xl mx-auto">
+            <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-slate-300 mb-6 sm:mb-8 max-w-3xl mx-auto px-4">
               Мы — ведущий поставщик компьютерной техники и комплектующих в Узбекистане, 
               работающий с 2010 года
             </p>
@@ -28,9 +28,9 @@ export default function AboutPage() {
       </section>
 
       {/* Company Story */}
-      <section className="py-16 bg-slate-800">
+      <section className="py-8 sm:py-12 md:py-16 bg-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 md:gap-12 items-center">
             <div>
               <h2 className="text-3xl md:text-4xl font-bold mb-6">Наша история</h2>
               <div className="space-y-4 text-slate-300">
@@ -75,16 +75,16 @@ export default function AboutPage() {
       </section>
 
       {/* Values */}
-      <section className="py-16 bg-slate-900">
+      <section className="py-8 sm:py-12 md:py-16 bg-slate-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Наши ценности</h2>
-            <p className="text-slate-300 text-lg">
+          <div className="text-center mb-8 sm:mb-10 md:mb-12">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4">Наши ценности</h2>
+            <p className="text-slate-300 text-sm sm:text-base md:text-lg">
               Принципы, которыми мы руководствуемся в работе
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7 md:gap-8">
             <div className="text-center">
               <div className="bg-blue-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Shield className="h-8 w-8 text-white" />

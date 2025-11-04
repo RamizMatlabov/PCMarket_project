@@ -50,13 +50,13 @@ export default function ContactPage() {
       <Navigation />
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-slate-900 via-blue-900 to-slate-900 py-20">
+      <section className="bg-gradient-to-r from-slate-900 via-blue-900 to-slate-900 py-12 sm:py-16 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="text-4xl md:text-6xl font-bold mb-6">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 px-2">
               Свяжитесь с <span className="text-blue-400">нами</span>
             </h1>
-            <p className="text-xl md:text-2xl text-slate-300 mb-8 max-w-3xl mx-auto">
+            <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-slate-300 mb-6 sm:mb-8 max-w-3xl mx-auto px-4">
               Мы всегда готовы помочь вам с выбором и ответить на любые вопросы
             </p>
           </div>
@@ -64,9 +64,9 @@ export default function ContactPage() {
       </section>
 
       {/* Contact Info & Form */}
-      <section className="py-16 bg-slate-800">
+      <section className="py-8 sm:py-12 md:py-16 bg-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 md:gap-12">
             {/* Contact Information */}
             <div>
               <h2 className="text-3xl font-bold mb-6">Контактная информация</h2>

@@ -84,19 +84,19 @@ export default function Navigation({ cart = [] }) {
           </nav>
 
           {/* Search and Cart */}
-          <div className="flex items-center space-x-4">
-            <div className="hidden sm:flex items-center bg-slate-700 rounded-lg px-3 py-2">
-              <Search className="h-4 w-4 text-slate-400 mr-2" />
+          <div className="flex items-center space-x-2 sm:space-x-3 md:space-x-4">
+            <div className="hidden sm:flex items-center bg-slate-700 rounded-lg px-2 sm:px-3 py-1.5 sm:py-2">
+              <Search className="h-3 w-3 sm:h-4 sm:w-4 text-slate-400 mr-1.5 sm:mr-2" />
               <input
                 type="text"
                 placeholder="Поиск товаров..."
-                className="bg-transparent text-white placeholder-slate-400 focus:outline-none"
+                className="bg-transparent text-white placeholder-slate-400 focus:outline-none text-xs sm:text-sm w-24 sm:w-32 md:w-40"
               />
             </div>
-            <Link href="/cart" className="relative p-2 text-white hover:text-blue-400 transition-colors">
-              <ShoppingCart className="h-6 w-6" />
+            <Link href="/cart" className="relative p-1.5 sm:p-2 text-white hover:text-blue-400 transition-colors">
+              <ShoppingCart className="h-5 w-5 sm:h-6 sm:w-6" />
               {cart.length > 0 && (
-                <span className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full h-4 w-4 sm:h-5 sm:w-5 flex items-center justify-center text-xs">
                   {cart.length}
                 </span>
               )}
@@ -104,26 +104,26 @@ export default function Navigation({ cart = [] }) {
             
             {/* Auth buttons */}
             {authenticated ? (
-              <Link href="/profile" className="flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
-                <User className="h-5 w-5" />
+              <Link href="/profile" className="flex items-center space-x-1 sm:space-x-2 px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors text-xs sm:text-sm">
+                <User className="h-4 w-4 sm:h-5 sm:w-5" />
                 <span className="hidden sm:inline">{user?.first_name || user?.username || 'Профиль'}</span>
               </Link>
             ) : (
               <div className="hidden md:flex items-center space-x-2">
-                <Link href="/login" className="px-4 py-2 text-white hover:text-blue-400 transition-colors">
+                <Link href="/login" className="px-3 sm:px-4 py-1.5 sm:py-2 text-white hover:text-blue-400 transition-colors text-sm sm:text-base">
                   Вход
                 </Link>
-                <Link href="/register" className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
+                <Link href="/register" className="px-3 sm:px-4 py-1.5 sm:py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors text-sm sm:text-base">
                   Регистрация
                 </Link>
               </div>
             )}
             
             <button
-              className="md:hidden p-2 text-white hover:text-blue-400 transition-colors"
+              className="md:hidden p-1.5 sm:p-2 text-white hover:text-blue-400 transition-colors"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
-              {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              {mobileMenuOpen ? <X className="h-5 w-5 sm:h-6 sm:w-6" /> : <Menu className="h-5 w-5 sm:h-6 sm:w-6" />}
             </button>
           </div>
         </div>

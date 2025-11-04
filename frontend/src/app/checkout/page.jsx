@@ -176,22 +176,22 @@ export default function CheckoutPage() {
       {/* Header */}
       <Navigation />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Оформление заказа</h1>
-          <p className="text-slate-300">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 md:py-8">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold mb-2">Оформление заказа</h1>
+          <p className="text-slate-300 text-sm sm:text-base">
             Заполните форму ниже для завершения покупки
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
           {/* Order Form */}
           <div>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="bg-slate-800 rounded-lg p-6">
-                <h3 className="text-lg font-semibold mb-4">Контактная информация</h3>
+            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5 md:space-y-6">
+              <div className="bg-slate-800 rounded-lg p-4 sm:p-5 md:p-6">
+                <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">Контактная информация</h3>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div>
                     <label className="block text-sm font-medium mb-2">Имя *</label>
                     <input
@@ -297,10 +297,10 @@ export default function CheckoutPage() {
 
           {/* Order Summary */}
           <div>
-            <div className="bg-slate-800 rounded-lg p-6 sticky top-8">
-              <h3 className="text-lg font-semibold mb-4">Ваш заказ</h3>
+            <div className="bg-slate-800 rounded-lg p-4 sm:p-5 md:p-6 lg:sticky lg:top-8">
+              <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">Ваш заказ</h3>
               
-              <div className="space-y-4 mb-6">
+              <div className="space-y-3 sm:space-y-4 mb-4 sm:mb-6">
                 {cart.map((item) => (
                   <div key={item.id} className="flex items-center space-x-3">
                     {item.image_url ? (
