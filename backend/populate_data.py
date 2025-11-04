@@ -53,6 +53,21 @@ def create_categories():
             'name': 'Охлаждение',
             'slug': 'cooling',
             'description': 'Системы охлаждения для процессоров и видеокарт'
+        },
+        {
+            'name': 'Компьютеры',
+            'slug': 'computers',
+            'description': 'Готовые настольные компьютеры для работы и игр'
+        },
+        {
+            'name': 'Моноблоки',
+            'slug': 'all-in-one',
+            'description': 'Моноблоки - компьютеры со встроенным монитором'
+        },
+        {
+            'name': 'Ноутбуки',
+            'slug': 'laptops',
+            'description': 'Портативные компьютеры для работы и учебы'
         }
     ]
     
@@ -272,6 +287,202 @@ def create_products(categories):
                 {'name': 'TDP', 'value': '220 Вт'},
                 {'name': 'Сокеты', 'value': 'Intel LGA1700, AMD AM5'},
                 {'name': 'Уровень шума', 'value': 'до 24.6 дБ(А)'}
+            ]
+        },
+        
+        # Компьютеры
+        {
+            'name': 'Gaming PC Intel Core i9-13900K + RTX 4090',
+            'slug': 'gaming-pc-intel-i9-rtx4090',
+            'description': 'Мощный игровой компьютер с топовым процессором и видеокартой',
+            'price': 250000.00,
+            'category': categories[8],  # Компьютеры
+            'product_type': 'computer',
+            'brand': 'Custom Build',
+            'model': 'Gaming Pro X',
+            'stock_quantity': 5,
+            'specifications': [
+                {'name': 'Процессор', 'value': 'Intel Core i9-13900K'},
+                {'name': 'Видеокарта', 'value': 'NVIDIA GeForce RTX 4090 24GB'},
+                {'name': 'Оперативная память', 'value': '32GB DDR5-5600'},
+                {'name': 'Накопитель', 'value': '2TB NVMe SSD'},
+                {'name': 'Блок питания', 'value': '1000W 80+ Gold'},
+                {'name': 'Корпус', 'value': 'Fractal Design Define 7 XL'}
+            ]
+        },
+        {
+            'name': 'Workstation PC AMD Ryzen 9 7950X',
+            'slug': 'workstation-pc-amd-ryzen-9',
+            'description': 'Профессиональная рабочая станция для дизайна и рендеринга',
+            'price': 180000.00,
+            'category': categories[8],  # Компьютеры
+            'product_type': 'computer',
+            'brand': 'Custom Build',
+            'model': 'Workstation Elite',
+            'stock_quantity': 8,
+            'specifications': [
+                {'name': 'Процессор', 'value': 'AMD Ryzen 9 7950X'},
+                {'name': 'Видеокарта', 'value': 'AMD Radeon RX 7900 XTX 24GB'},
+                {'name': 'Оперативная память', 'value': '64GB DDR5-5600'},
+                {'name': 'Накопитель', 'value': '2TB NVMe SSD + 4TB HDD'},
+                {'name': 'Блок питания', 'value': '1000W 80+ Gold'},
+                {'name': 'Корпус', 'value': 'Fractal Design Define 7 XL'}
+            ]
+        },
+        {
+            'name': 'Gaming PC AMD Ryzen 9 + RTX 4090',
+            'slug': 'gaming-pc-amd-ryzen-rtx4090',
+            'description': 'Высокопроизводительный игровой компьютер на базе AMD',
+            'price': 240000.00,
+            'category': categories[8],  # Компьютеры
+            'product_type': 'computer',
+            'brand': 'Custom Build',
+            'model': 'Gaming Ultra',
+            'stock_quantity': 6,
+            'specifications': [
+                {'name': 'Процессор', 'value': 'AMD Ryzen 9 7950X'},
+                {'name': 'Видеокарта', 'value': 'NVIDIA GeForce RTX 4090 24GB'},
+                {'name': 'Оперативная память', 'value': '32GB DDR5-5600'},
+                {'name': 'Накопитель', 'value': '2TB NVMe SSD'},
+                {'name': 'Блок питания', 'value': '1000W 80+ Gold'},
+                {'name': 'Охлаждение', 'value': 'Noctua NH-D15'}
+            ]
+        },
+        
+        # Моноблоки
+        {
+            'name': 'Apple iMac 24" M3',
+            'slug': 'apple-imac-24-m3',
+            'description': 'Современный моноблок от Apple с чипом M3',
+            'price': 150000.00,
+            'category': categories[9],  # Моноблоки
+            'product_type': 'computer',
+            'brand': 'Apple',
+            'model': 'iMac 24" M3',
+            'stock_quantity': 10,
+            'specifications': [
+                {'name': 'Процессор', 'value': 'Apple M3'},
+                {'name': 'Память', 'value': '16GB Unified Memory'},
+                {'name': 'Накопитель', 'value': '512GB SSD'},
+                {'name': 'Экран', 'value': '24" 4.5K Retina Display'},
+                {'name': 'Графика', 'value': '10-core GPU'},
+                {'name': 'Операционная система', 'value': 'macOS Sonoma'}
+            ]
+        },
+        {
+            'name': 'HP Pavilion All-in-One 27',
+            'slug': 'hp-pavilion-all-in-one-27',
+            'description': 'Моноблок с большим экраном для работы и развлечений',
+            'price': 90000.00,
+            'category': categories[9],  # Моноблоки
+            'product_type': 'computer',
+            'brand': 'HP',
+            'model': 'Pavilion All-in-One 27',
+            'stock_quantity': 12,
+            'specifications': [
+                {'name': 'Процессор', 'value': 'Intel Core i7-13700'},
+                {'name': 'Память', 'value': '16GB DDR4'},
+                {'name': 'Накопитель', 'value': '512GB SSD + 1TB HDD'},
+                {'name': 'Экран', 'value': '27" Full HD IPS'},
+                {'name': 'Графика', 'value': 'Intel UHD Graphics 770'},
+                {'name': 'Операционная система', 'value': 'Windows 11'}
+            ]
+        },
+        {
+            'name': 'Lenovo IdeaCentre AIO 5 27',
+            'slug': 'lenovo-ideacentre-aio-5-27',
+            'description': 'Стильный моноблок для дома и офиса',
+            'price': 85000.00,
+            'category': categories[9],  # Моноблоки
+            'product_type': 'computer',
+            'brand': 'Lenovo',
+            'model': 'IdeaCentre AIO 5 27',
+            'stock_quantity': 15,
+            'specifications': [
+                {'name': 'Процессор', 'value': 'AMD Ryzen 7 7730U'},
+                {'name': 'Память', 'value': '16GB DDR4'},
+                {'name': 'Накопитель', 'value': '512GB SSD'},
+                {'name': 'Экран', 'value': '27" QHD IPS'},
+                {'name': 'Графика', 'value': 'AMD Radeon Graphics'},
+                {'name': 'Операционная система', 'value': 'Windows 11'}
+            ]
+        },
+        
+        # Ноутбуки
+        {
+            'name': 'ASUS ROG Strix G18',
+            'slug': 'asus-rog-strix-g18',
+            'description': 'Игровой ноутбук с топовой производительностью',
+            'price': 180000.00,
+            'category': categories[10],  # Ноутбуки
+            'product_type': 'computer',
+            'brand': 'ASUS',
+            'model': 'ROG Strix G18',
+            'stock_quantity': 7,
+            'specifications': [
+                {'name': 'Процессор', 'value': 'Intel Core i9-13980HX'},
+                {'name': 'Видеокарта', 'value': 'NVIDIA GeForce RTX 4090 16GB'},
+                {'name': 'Память', 'value': '32GB DDR5'},
+                {'name': 'Накопитель', 'value': '1TB NVMe SSD'},
+                {'name': 'Экран', 'value': '18" QHD 240Hz'},
+                {'name': 'Операционная система', 'value': 'Windows 11'}
+            ]
+        },
+        {
+            'name': 'MacBook Pro 16" M3 Max',
+            'slug': 'macbook-pro-16-m3-max',
+            'description': 'Профессиональный ноутбук от Apple для творческих задач',
+            'price': 280000.00,
+            'category': categories[10],  # Ноутбуки
+            'product_type': 'computer',
+            'brand': 'Apple',
+            'model': 'MacBook Pro 16" M3 Max',
+            'stock_quantity': 5,
+            'specifications': [
+                {'name': 'Процессор', 'value': 'Apple M3 Max'},
+                {'name': 'Память', 'value': '36GB Unified Memory'},
+                {'name': 'Накопитель', 'value': '1TB SSD'},
+                {'name': 'Экран', 'value': '16.2" Liquid Retina XDR'},
+                {'name': 'Графика', 'value': '40-core GPU'},
+                {'name': 'Операционная система', 'value': 'macOS Sonoma'}
+            ]
+        },
+        {
+            'name': 'Lenovo ThinkPad X1 Carbon Gen 11',
+            'slug': 'lenovo-thinkpad-x1-carbon-gen11',
+            'description': 'Премиальный бизнес-ноутбук для профессионалов',
+            'price': 120000.00,
+            'category': categories[10],  # Ноутбуки
+            'product_type': 'computer',
+            'brand': 'Lenovo',
+            'model': 'ThinkPad X1 Carbon Gen 11',
+            'stock_quantity': 10,
+            'specifications': [
+                {'name': 'Процессор', 'value': 'Intel Core i7-1355U'},
+                {'name': 'Память', 'value': '16GB LPDDR5'},
+                {'name': 'Накопитель', 'value': '512GB NVMe SSD'},
+                {'name': 'Экран', 'value': '14" WUXGA IPS'},
+                {'name': 'Графика', 'value': 'Intel Iris Xe Graphics'},
+                {'name': 'Операционная система', 'value': 'Windows 11 Pro'}
+            ]
+        },
+        {
+            'name': 'Dell XPS 15',
+            'slug': 'dell-xps-15',
+            'description': 'Универсальный ноутбук для работы и творчества',
+            'price': 140000.00,
+            'category': categories[10],  # Ноутбуки
+            'product_type': 'computer',
+            'brand': 'Dell',
+            'model': 'XPS 15',
+            'stock_quantity': 8,
+            'specifications': [
+                {'name': 'Процессор', 'value': 'Intel Core i7-13700H'},
+                {'name': 'Видеокарта', 'value': 'NVIDIA GeForce RTX 4050 6GB'},
+                {'name': 'Память', 'value': '32GB DDR5'},
+                {'name': 'Накопитель', 'value': '1TB NVMe SSD'},
+                {'name': 'Экран', 'value': '15.6" 3.5K OLED'},
+                {'name': 'Операционная система', 'value': 'Windows 11'}
             ]
         }
     ]

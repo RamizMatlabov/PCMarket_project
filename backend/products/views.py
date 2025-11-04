@@ -29,8 +29,19 @@ class ProductDetailView(generics.RetrieveAPIView):
 
 @api_view(['GET'])
 def featured_products(request):
-    """Get featured products (latest 8 products)"""
-    products = Product.objects.filter(is_active=True)[:8]
+    """Get featured products (computers, all-in-one, laptops)"""
+    # Get categories for computers, all-in-one, and laptops
+    computer_categories = Category.objects.filter(
+        slug__in=['computers', 'all-in-one', 'laptops']
+    )
+    
+    # Get products with product_type='computer' from these categories
+    products = Product.objects.filter(
+        is_active=True,
+        product_type='computer',
+        category__in=computer_categories
+    ).order_by('-created_at')[:8]
+    
     serializer = ProductListSerializer(products, many=True, context={'request': request})
     return Response(serializer.data)
 
