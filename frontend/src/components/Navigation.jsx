@@ -1,12 +1,52 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from "next/image";
 import Link from "next/link";
-import { ShoppingCart, Search, Menu, X } from 'lucide-react';
+import { ShoppingCart, Search, Menu, X, User } from 'lucide-react';
+import { isAuthenticated, getCurrentUser, logout } from '@/utils/auth';
+import { useRouter } from 'next/navigation';
 
 export default function Navigation({ cart = [] }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [authenticated, setAuthenticated] = useState(false);
+  const [user, setUser] = useState(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    const checkAuth = () => {
+      setAuthenticated(isAuthenticated());
+      setUser(getCurrentUser());
+    };
+    
+    checkAuth();
+    
+    // Слушаем кастомное событие изменения аутентификации
+    const handleAuthChange = () => {
+      checkAuth();
+    };
+    
+    window.addEventListener('authChange', handleAuthChange);
+    // Также проверяем при фокусе окна
+    window.addEventListener('focus', checkAuth);
+    
+    return () => {
+      window.removeEventListener('authChange', handleAuthChange);
+      window.removeEventListener('focus', checkAuth);
+    };
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      setAuthenticated(false);
+      setUser(null);
+      router.push('/');
+    }
+  };
 
   return (
     <header className="bg-slate-800 border-b border-slate-700">
@@ -61,6 +101,24 @@ export default function Navigation({ cart = [] }) {
                 </span>
               )}
             </Link>
+            
+            {/* Auth buttons */}
+            {authenticated ? (
+              <Link href="/profile" className="flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
+                <User className="h-5 w-5" />
+                <span className="hidden sm:inline">{user?.first_name || user?.username || 'Профиль'}</span>
+              </Link>
+            ) : (
+              <div className="hidden md:flex items-center space-x-2">
+                <Link href="/login" className="px-4 py-2 text-white hover:text-blue-400 transition-colors">
+                  Вход
+                </Link>
+                <Link href="/register" className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
+                  Регистрация
+                </Link>
+              </div>
+            )}
+            
             <button
               className="md:hidden p-2 text-white hover:text-blue-400 transition-colors"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -89,6 +147,28 @@ export default function Navigation({ cart = [] }) {
               <Link href="/help" className="block text-white hover:text-blue-400 transition-colors py-2">
                 Помощь
               </Link>
+              {authenticated ? (
+                <>
+                  <Link href="/profile" className="block text-white hover:text-blue-400 transition-colors py-2">
+                    Профиль
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="block w-full text-left text-white hover:text-blue-400 transition-colors py-2"
+                  >
+                    Выйти
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link href="/login" className="block text-white hover:text-blue-400 transition-colors py-2">
+                    Вход
+                  </Link>
+                  <Link href="/register" className="block text-white hover:text-blue-400 transition-colors py-2">
+                    Регистрация
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         )}
