@@ -431,7 +431,7 @@ export default function DeliveryPage() {
             </div>
           </div>
           <div className="border-t border-slate-700 mt-8 pt-8 text-center text-slate-400">
-            <p>&copy; 2024 PCMarket. Все права защищены.</p>
+            <p>&copy; 2025 PCMarket. Все права защищены.</p>
           </div>
         </div>
       </footer>

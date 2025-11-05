@@ -47,7 +47,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="border-t border-slate-700 mt-6 sm:mt-8 pt-6 sm:pt-8 text-center text-slate-400 text-sm sm:text-base">
-          <p>&copy; 2024 PCMarket. Все права защищены.</p>
+          <p>&copy; 2025 PCMarket. Все права защищены.</p>
         </div>
       </div>
     </footer>

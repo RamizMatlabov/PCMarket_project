@@ -78,9 +78,6 @@ export default function Navigation({ cart = [] }) {
             <Link href="/contact" className="text-white hover:text-blue-400 transition-colors">
               Контакты
             </Link>
-            <Link href="/help" className="text-white hover:text-blue-400 transition-colors">
-              Помощь
-            </Link>
           </nav>
 
           {/* Search and Cart */}
@@ -143,9 +140,6 @@ export default function Navigation({ cart = [] }) {
               </Link>
               <Link href="/contact" className="block text-white hover:text-blue-400 transition-colors py-2">
                 Контакты
-              </Link>
-              <Link href="/help" className="block text-white hover:text-blue-400 transition-colors py-2">
-                Помощь
               </Link>
               {authenticated ? (
                 <>
