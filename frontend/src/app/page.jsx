@@ -6,11 +6,12 @@ import Link from "next/link";
 import { Star, ArrowRight, ShoppingCart, Search } from 'lucide-react';
 import Navigation from '../components/Navigation';
 import Footer from '../components/Footer';
+import { useCart } from '@/context/CartContext';
 
 export default function Home() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [cart, setCart] = useState([]);
+  const { addToCart } = useCart();
 
   useEffect(() => {
     fetchProducts();
@@ -28,14 +29,10 @@ export default function Home() {
     }
   };
 
-  const addToCart = (product) => {
-    setCart([...cart, product]);
-  };
-
   return (
     <div className="min-h-screen bg-slate-900 text-white">
       {/* Header */}
-      <Navigation cart={cart} />
+      <Navigation />
 
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-slate-900 via-blue-900 to-slate-900 py-12 sm:py-16 md:py-20">

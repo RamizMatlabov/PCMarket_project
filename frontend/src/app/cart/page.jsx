@@ -1,57 +1,18 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useMemo, useState } from 'react';
 import Image from "next/image";
 import Link from "next/link";
 import { ShoppingCart, Trash2, Plus, Minus, CreditCard } from 'lucide-react';
 import Navigation from '../../components/Navigation';
 import Footer from '../../components/Footer';
+import { useCart } from '@/context/CartContext';
 
 export default function CartPage() {
-  const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(false);
+  const { cart, updateQuantity, removeFromCart, clearCart, totalItems, totalPrice } = useCart();
 
-  useEffect(() => {
-    // Load cart from localStorage
-    const savedCart = localStorage.getItem('cart');
-    if (savedCart) {
-      setCart(JSON.parse(savedCart));
-    }
-  }, []);
-
-  useEffect(() => {
-    // Save cart to localStorage
-    localStorage.setItem('cart', JSON.stringify(cart));
-  }, [cart]);
-
-  const updateQuantity = (id, newQuantity) => {
-    if (newQuantity <= 0) {
-      removeItem(id);
-      return;
-    }
-    setCart(cart.map(item => 
-      item.id === id ? { ...item, quantity: newQuantity } : item
-    ));
-  };
-
-  const removeItem = (id) => {
-    setCart(cart.filter(item => item.id !== id));
-  };
-
-  const clearCart = () => {
-    setCart([]);
-  };
-
-  const getTotalPrice = () => {
-    return cart.reduce((total, item) => {
-      const price = parseFloat(item.price.replace(/[^\d.]/g, ''));
-      return total + (price * item.quantity);
-    }, 0);
-  };
-
-  const getTotalItems = () => {
-    return cart.reduce((total, item) => total + item.quantity, 0);
-  };
+  const formattedTotalPrice = useMemo(() => totalPrice.toLocaleString(), [totalPrice]);
 
   const proceedToCheckout = () => {
     // Here you would typically redirect to checkout page
@@ -62,7 +23,7 @@ export default function CartPage() {
     return (
       <div className="min-h-screen bg-slate-900 text-white">
         {/* Header */}
-        <Navigation cart={cart} />
+        <Navigation />
 
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
           <div className="text-center px-4">
@@ -89,13 +50,13 @@ export default function CartPage() {
   return (
     <div className="min-h-screen bg-slate-900 text-white">
       {/* Header */}
-      <Navigation cart={cart} />
+      <Navigation />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 md:py-8">
         <div className="mb-6 sm:mb-8">
           <h1 className="text-2xl sm:text-3xl font-bold mb-2">Корзина</h1>
           <p className="text-slate-300 text-sm sm:text-base">
-            {getTotalItems()} товар(ов) на сумму {getTotalPrice().toLocaleString()} USD
+            {totalItems} товар(ов) на сумму {formattedTotalPrice} USD
           </p>
         </div>
 
@@ -129,7 +90,7 @@ export default function CartPage() {
                       <p className="text-slate-400 text-xs sm:text-sm mb-2">{item.brand}</p>
                       <div className="flex items-center justify-between mb-2 sm:mb-0">
                         <span className="text-lg sm:text-xl font-bold text-blue-400">
-                          {item.price} USD
+                          {item.price}
                         </span>
                         <div className="flex items-center space-x-2">
                           <button
@@ -151,13 +112,13 @@ export default function CartPage() {
                     
                     <div className="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-start w-full sm:w-auto space-x-2 sm:space-x-0 sm:space-y-2">
                       <button
-                        onClick={() => removeItem(item.id)}
+                        onClick={() => removeFromCart(item.id)}
                         className="p-2 text-red-400 hover:text-red-300 hover:bg-red-900/20 rounded-lg transition-colors"
                       >
                         <Trash2 className="h-4 w-4" />
                       </button>
                       <span className="text-base sm:text-lg font-semibold">
-                        {(parseFloat(item.price.replace(/[^\d.]/g, '')) * item.quantity).toLocaleString()} USD
+                        {(item.unitPrice * item.quantity).toLocaleString()} USD
                       </span>
                     </div>
                   </div>
@@ -188,8 +149,8 @@ export default function CartPage() {
               
               <div className="space-y-2 sm:space-y-3 mb-4 sm:mb-6">
                 <div className="flex justify-between text-sm sm:text-base">
-                  <span>Товары ({getTotalItems()})</span>
-                  <span>{getTotalPrice().toLocaleString()} USD</span>
+                  <span>Товары ({totalItems})</span>
+                  <span>{formattedTotalPrice} USD</span>
                 </div>
                 <div className="flex justify-between text-sm sm:text-base">
                   <span>Доставка</span>
@@ -198,7 +159,7 @@ export default function CartPage() {
                 <div className="border-t border-slate-700 pt-2 sm:pt-3">
                   <div className="flex justify-between text-base sm:text-lg font-semibold">
                     <span>Итого</span>
-                    <span className="text-blue-400">{getTotalPrice().toLocaleString()} USD</span>
+                    <span className="text-blue-400">{formattedTotalPrice} USD</span>
                   </div>
                 </div>
               </div>

@@ -6,12 +6,14 @@ import Link from "next/link";
 import { ShoppingCart, Search, Menu, X, User } from 'lucide-react';
 import { isAuthenticated, getCurrentUser, logout } from '@/utils/auth';
 import { useRouter } from 'next/navigation';
+import { useCart } from '@/context/CartContext';
 
-export default function Navigation({ cart = [] }) {
+export default function Navigation() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [authenticated, setAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
   const router = useRouter();
+  const { totalItems } = useCart();
 
   useEffect(() => {
     const checkAuth = () => {
@@ -92,9 +94,9 @@ export default function Navigation({ cart = [] }) {
             </div>
             <Link href="/cart" className="relative p-1.5 sm:p-2 text-white hover:text-blue-400 transition-colors">
               <ShoppingCart className="h-5 w-5 sm:h-6 sm:w-6" />
-              {cart.length > 0 && (
+              {totalItems > 0 && (
                 <span className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full h-4 w-4 sm:h-5 sm:w-5 flex items-center justify-center text-xs">
-                  {cart.length}
+                  {totalItems}
                 </span>
               )}
             </Link>
