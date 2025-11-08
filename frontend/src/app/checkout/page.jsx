@@ -6,8 +6,10 @@ import Link from "next/link";
 import { CreditCard, CheckCircle } from 'lucide-react';
 import Navigation from '../../components/Navigation';
 import Footer from '../../components/Footer';
+import { useCart } from '@/context/CartContext';
 
 export default function CheckoutPage() {
+  const { clearCart } = useCart();
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(false);
@@ -23,6 +25,7 @@ export default function CheckoutPage() {
     country: 'Russia',
     items: []
   });
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     // Load cart from localStorage
@@ -52,10 +55,60 @@ export default function CheckoutPage() {
       ...prev,
       [name]: value
     }));
+    // Clear error for this field when user starts typing
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    
+    if (!formData.first_name.trim()) {
+      newErrors.first_name = 'Имя обязательно для заполнения';
+    }
+    
+    if (!formData.last_name.trim()) {
+      newErrors.last_name = 'Фамилия обязательна для заполнения';
+    }
+    
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email обязателен для заполнения';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'Введите корректный email адрес';
+    }
+    
+    if (!formData.phone.trim()) {
+      newErrors.phone = 'Телефон обязателен для заполнения';
+    }
+    
+    if (!formData.address.trim()) {
+      newErrors.address = 'Адрес обязателен для заполнения';
+    }
+    
+    if (!formData.city.trim()) {
+      newErrors.city = 'Город обязателен для заполнения';
+    }
+    
+    if (!formData.postal_code.trim()) {
+      newErrors.postal_code = 'Почтовый индекс обязателен для заполнения';
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validate form before submitting
+    if (!validateForm()) {
+      return;
+    }
+    
     setLoading(true);
 
     try {
@@ -64,11 +117,21 @@ export default function CheckoutPage() {
         return total + (price * item.quantity);
       }, 0);
 
+      // Convert price strings to numbers for the backend
+      const orderItems = formData.items.map(item => ({
+        ...item,
+        product_price: parseFloat(item.product_price.replace(/[^\d.]/g, '')),
+        total_price: parseFloat(item.total_price.replace(/[^\d.]/g, ''))
+      }));
+
       const orderData = {
         ...formData,
+        items: orderItems,
         total_amount: totalAmount.toFixed(2)
       };
 
+      console.log('Sending order data:', JSON.stringify(orderData, null, 2));
+      
       const response = await fetch('http://localhost:8000/api/orders/create-order/', {
         method: 'POST',
         headers: {
@@ -76,20 +139,24 @@ export default function CheckoutPage() {
         },
         body: JSON.stringify(orderData),
       });
+      
+      console.log('Response status:', response.status);
 
       if (response.ok) {
         const result = await response.json();
         setOrderId(result.id);
         setOrderSuccess(true);
         // Clear cart
-        localStorage.removeItem('cart');
+        clearCart();
         setCart([]);
       } else {
-        throw new Error('Ошибка при создании заказа');
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        console.error('Server error response:', errorData);
+        throw new Error(errorData.error || 'Ошибка при создании заказа');
       }
     } catch (error) {
       console.error('Error creating order:', error);
-      alert('Произошла ошибка при оформлении заказа. Попробуйте еще раз.');
+      alert(`Произошла ошибка при оформлении заказа: ${error.message}. Попробуйте еще раз.`);
     } finally {
       setLoading(false);
     }
@@ -108,10 +175,10 @@ export default function CheckoutPage() {
 
   if (orderSuccess) {
     return (
-      <div className="min-h-screen bg-slate-900 text-white">
+      <div className="min-h-screen bg-slate-900 text-white flex flex-col">
         <Navigation />
 
-        <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="flex-1 max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="text-center">
             <CheckCircle className="h-24 w-24 text-green-400 mx-auto mb-6" />
             <h1 className="text-3xl font-bold mb-4">Заказ успешно оформлен!</h1>
@@ -137,20 +204,19 @@ export default function CheckoutPage() {
               </Link>
             </div>
           </div>
-
-          {/* Footer */}
-          <Footer />
         </div>
+
+        <Footer />
       </div>
     );
   }
 
   if (cart.length === 0) {
     return (
-      <div className="min-h-screen bg-slate-900 text-white">
+      <div className="min-h-screen bg-slate-900 text-white flex flex-col">
         <Navigation />
 
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="flex-1 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="text-center">
             <h1 className="text-3xl font-bold mb-4">Корзина пуста</h1>
             <p className="text-slate-300 mb-8">
@@ -163,156 +229,189 @@ export default function CheckoutPage() {
               Перейти к каталогу
             </Link>
           </div>
-
-          {/* Footer */}
-          <Footer />
         </div>
+
+        <Footer />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-900 text-white">
-      {/* Header */}
+    <div className="min-h-screen bg-slate-900 text-white flex flex-col">
       <Navigation />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 md:py-8">
-        <div className="mb-6 sm:mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold mb-2">Оформление заказа</h1>
-          <p className="text-slate-300 text-sm sm:text-base">
+      <div className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold mb-2">Оформление заказа</h1>
+          <p className="text-slate-300">
             Заполните форму ниже для завершения покупки
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Order Form */}
-          <div>
-            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5 md:space-y-6">
-              <div className="bg-slate-800 rounded-lg p-4 sm:p-5 md:p-6">
-                <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">Контактная информация</h3>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Имя *</label>
-                    <input
-                      type="text"
-                      name="first_name"
-                      value={formData.first_name}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Фамилия *</label>
-                    <input
-                      type="text"
-                      name="last_name"
-                      value={formData.last_name}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                </div>
-
-                <div className="mt-4">
-                  <label className="block text-sm font-medium mb-2">Email *</label>
+          <div className="space-y-6">
+            <div className="bg-slate-800 rounded-lg p-6">
+              <h3 className="text-lg font-semibold mb-4">Контактная информация</h3>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium mb-2">Имя *</label>
                   <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
+                    type="text"
+                    name="first_name"
+                    value={formData.first_name}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className={`w-full px-3 py-2 bg-slate-700 border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                      errors.first_name ? 'border-red-500' : 'border-slate-600'
+                    }`}
                   />
+                  {errors.first_name && (
+                    <p className="text-red-500 text-sm mt-1">{errors.first_name}</p>
+                  )}
                 </div>
-
-                <div className="mt-4">
-                  <label className="block text-sm font-medium mb-2">Телефон *</label>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Фамилия *</label>
                   <input
-                    type="tel"
-                    name="phone"
-                    value={formData.phone}
+                    type="text"
+                    name="last_name"
+                    value={formData.last_name}
                     onChange={handleInputChange}
                     required
-                    placeholder="+998 (99) 123-45-67"
-                    className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className={`w-full px-3 py-2 bg-slate-700 border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                      errors.last_name ? 'border-red-500' : 'border-slate-600'
+                    }`}
                   />
+                  {errors.last_name && (
+                    <p className="text-red-500 text-sm mt-1">{errors.last_name}</p>
+                  )}
                 </div>
               </div>
 
-              <div className="bg-slate-800 rounded-lg p-6">
-                <h3 className="text-lg font-semibold mb-4">Адрес доставки</h3>
-                
-                <div className="mt-4">
-                  <label className="block text-sm font-medium mb-2">Адрес *</label>
-                  <textarea
-                    name="address"
-                    value={formData.address}
-                    onChange={handleInputChange}
-                    required
-                    rows={3}
-                    placeholder="Улица, дом, квартира"
-                    className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Город *</label>
-                    <input
-                      type="text"
-                      name="city"
-                      value={formData.city}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Почтовый индекс *</label>
-                    <input
-                      type="text"
-                      name="postal_code"
-                      value={formData.postal_code}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                  </div>
-                </div>
+              <div className="mt-4">
+                <label className="block text-sm font-medium mb-2">Email *</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  required
+                  className={`w-full px-3 py-2 bg-slate-700 border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                    errors.email ? 'border-red-500' : 'border-slate-600'
+                  }`}
+                />
+                {errors.email && (
+                  <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                )}
               </div>
 
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-slate-600 text-white py-3 px-4 rounded-lg font-semibold transition-colors flex items-center justify-center"
-              >
-                <CreditCard className="h-5 w-5 mr-2" />
-                {loading ? 'Обработка...' : 'Оформить заказ'}
-              </button>
-            </form>
+              <div className="mt-4">
+                <label className="block text-sm font-medium mb-2">Телефон *</label>
+                <input
+                  type="tel"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  required
+                  placeholder="+998 (99) 123-45-67"
+                  className={`w-full px-3 py-2 bg-slate-700 border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                    errors.phone ? 'border-red-500' : 'border-slate-600'
+                  }`}
+                />
+                {errors.phone && (
+                  <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
+                )}
+              </div>
+            </div>
+
+            <div className="bg-slate-800 rounded-lg p-6">
+              <h3 className="text-lg font-semibold mb-4">Адрес доставки</h3>
+              
+              <div>
+                <label className="block text-sm font-medium mb-2">Адрес *</label>
+                <textarea
+                  name="address"
+                  value={formData.address}
+                  onChange={handleInputChange}
+                  required
+                  rows={3}
+                  placeholder="Улица, дом, квартира"
+                  className={`w-full px-3 py-2 bg-slate-700 border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                    errors.address ? 'border-red-500' : 'border-slate-600'
+                  }`}
+                />
+                {errors.address && (
+                  <p className="text-red-500 text-sm mt-1">{errors.address}</p>
+                )}
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+                <div>
+                  <label className="block text-sm font-medium mb-2">Город *</label>
+                  <input
+                    type="text"
+                    name="city"
+                    value={formData.city}
+                    onChange={handleInputChange}
+                    required
+                    className={`w-full px-3 py-2 bg-slate-700 border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                      errors.city ? 'border-red-500' : 'border-slate-600'
+                    }`}
+                  />
+                  {errors.city && (
+                    <p className="text-red-500 text-sm mt-1">{errors.city}</p>
+                  )}
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Почтовый индекс *</label>
+                  <input
+                    type="text"
+                    name="postal_code"
+                    value={formData.postal_code}
+                    onChange={handleInputChange}
+                    required
+                    className={`w-full px-3 py-2 bg-slate-700 border rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                      errors.postal_code ? 'border-red-500' : 'border-slate-600'
+                    }`}
+                  />
+                  {errors.postal_code && (
+                    <p className="text-red-500 text-sm mt-1">{errors.postal_code}</p>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              onClick={handleSubmit}
+              className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-slate-600 text-white py-3 px-4 rounded-lg font-semibold transition-colors flex items-center justify-center"
+            >
+              <CreditCard className="h-5 w-5 mr-2" />
+              {loading ? 'Обработка...' : 'Оформить заказ'}
+            </button>
           </div>
 
           {/* Order Summary */}
           <div>
-            <div className="bg-slate-800 rounded-lg p-4 sm:p-5 md:p-6 lg:sticky lg:top-8">
-              <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">Ваш заказ</h3>
+            <div className="bg-slate-800 rounded-lg p-6 lg:sticky lg:top-8">
+              <h3 className="text-lg font-semibold mb-4">Ваш заказ</h3>
               
-              <div className="space-y-3 sm:space-y-4 mb-4 sm:mb-6">
+              <div className="space-y-4 mb-6">
                 {cart.map((item) => (
-                  <div key={item.id} className="flex items-center space-x-3">
+                  <div key={item.id} className="flex items-center space-x-4">
                     {item.image_url ? (
-                      <Image
-                        src={item.image_url}
-                        alt={item.name}
-                        width={60}
-                        height={60}
-                        className="w-15 h-15 object-cover rounded-lg"
-                      />
+                      <div className="relative w-16 h-16 flex-shrink-0">
+                        <Image
+                          src={item.image_url}
+                          alt={item.name}
+                          fill
+                          className="object-cover rounded-lg"
+                        />
+                      </div>
                     ) : (
-                      <div className="w-15 h-15 bg-slate-700 rounded-lg flex items-center justify-center">
+                      <div className="w-16 h-16 bg-slate-700 rounded-lg flex items-center justify-center flex-shrink-0">
                         <span className="text-slate-400 text-xs">Нет фото</span>
                       </div>
                     )}
@@ -344,7 +443,6 @@ export default function CheckoutPage() {
         </div>
       </div>
 
-      {/* Footer */}
       <Footer />
     </div>
   );

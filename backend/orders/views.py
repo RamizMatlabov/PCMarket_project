@@ -30,4 +30,17 @@ def create_order(request):
         order = serializer.save()
         response_serializer = OrderSerializer(order)
         return Response(response_serializer.data, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    # Return more detailed error information
+    error_message = 'Validation failed'
+    if 'items' in serializer.errors:
+        error_message = 'Invalid order items. Please check product prices and quantities.'
+    elif any(field in serializer.errors for field in ['first_name', 'last_name', 'email', 'phone']):
+        error_message = 'Please fill in all required contact information correctly.'
+    elif any(field in serializer.errors for field in ['address', 'city', 'postal_code']):
+        error_message = 'Please provide a complete delivery address.'
+    
+    return Response({
+        'error': error_message,
+        'details': serializer.errors
+    }, status=status.HTTP_400_BAD_REQUEST)

@@ -15,8 +15,8 @@ export default function CartPage() {
   const formattedTotalPrice = useMemo(() => totalPrice.toLocaleString(), [totalPrice]);
 
   const proceedToCheckout = () => {
-    // Here you would typically redirect to checkout page
-    alert('Переход к оформлению заказа');
+    // Redirect to checkout page
+    window.location.href = '/checkout';
   };
 
   if (cart.length === 0) {

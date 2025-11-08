@@ -39,6 +39,7 @@ class OrderCreateSerializer(serializers.Serializer):
     city = serializers.CharField(max_length=100)
     postal_code = serializers.CharField(max_length=20)
     country = serializers.CharField(max_length=100, default='Russia')
+    total_amount = serializers.DecimalField(max_digits=10, decimal_places=2, required=False)
     items = OrderItemSerializer(many=True)
 
     def create(self, validated_data):
