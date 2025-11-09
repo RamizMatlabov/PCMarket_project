@@ -80,7 +80,7 @@ export default function Navigation() {
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
             <Image
-              src="/logo.svg"
+              src="/logo1.png"
               alt="PCMarket"
               width={40}
               height={40}

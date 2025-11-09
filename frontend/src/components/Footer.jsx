@@ -9,7 +9,7 @@ export default function Footer() {
           <div>
             <div className="flex items-center space-x-2 mb-4">
               <Image
-                src="/logo.svg"
+                src="/logo1.png"
                 alt="PCMarket"
                 width={32}
                 height={32}
