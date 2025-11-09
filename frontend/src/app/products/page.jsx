@@ -5,7 +5,6 @@ import { useSearchParams } from 'next/navigation';
 import Image from "next/image";
 import Link from "next/link";
 import { Search, Filter, Star } from 'lucide-react';
-import Navigation from '../../components/Navigation';
 import Footer from '../../components/Footer';
 import { useCart } from '@/context/CartContext';
 import AddToCartModal from '../../components/modals/AddToCartModal';
@@ -93,8 +92,6 @@ export default function ProductsPage() {
 
   return (
     <div className="min-h-screen bg-slate-900 text-white">
-      {/* Header */}
-      <Navigation />
       <AddToCartModal show={showModal} onClose={closeModal} />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 md:py-8">

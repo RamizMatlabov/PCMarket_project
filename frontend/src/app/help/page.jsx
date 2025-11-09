@@ -4,7 +4,6 @@ import { useState } from 'react';
 import Image from "next/image";
 import Link from "next/link";
 import { Search, ChevronDown, ChevronUp, HelpCircle, BookOpen, MessageCircle, Phone, Mail, FileText, Settings, ShoppingCart, CreditCard, Truck, Shield } from 'lucide-react';
-import Navigation from '../../components/Navigation';
 import Footer from '../../components/Footer';
 
 export default function HelpPage() {
@@ -141,9 +140,6 @@ export default function HelpPage() {
 
   return (
     <div className="min-h-screen bg-slate-900 text-white">
-      {/* Header */}
-      <Navigation />
-
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-slate-900 via-blue-900 to-slate-900 py-12 sm:py-16 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

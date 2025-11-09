@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import Image from "next/image";
 import Link from "next/link";
 import { CreditCard, CheckCircle } from 'lucide-react';
-import Navigation from '../../components/Navigation';
 import Footer from '../../components/Footer';
 import { useCart } from '@/context/CartContext';
 
@@ -214,8 +213,6 @@ export default function CheckoutPage() {
   if (cart.length === 0) {
     return (
       <div className="min-h-screen bg-slate-900 text-white flex flex-col">
-        <Navigation />
-
         <div className="flex-1 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="text-center">
             <h1 className="text-3xl font-bold mb-4">Корзина пуста</h1>
@@ -238,8 +235,6 @@ export default function CheckoutPage() {
 
   return (
     <div className="min-h-screen bg-slate-900 text-white flex flex-col">
-      <Navigation />
-
       <div className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2">Оформление заказа</h1>

@@ -4,7 +4,6 @@ import { useMemo, useState } from 'react';
 import Image from "next/image";
 import Link from "next/link";
 import { ShoppingCart, Trash2, Plus, Minus, CreditCard } from 'lucide-react';
-import Navigation from '../../components/Navigation';
 import Footer from '../../components/Footer';
 import { useCart } from '@/context/CartContext';
 
@@ -22,9 +21,6 @@ export default function CartPage() {
   if (cart.length === 0) {
     return (
       <div className="min-h-screen bg-slate-900 text-white">
-        {/* Header */}
-        <Navigation />
-
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
           <div className="text-center px-4">
             <ShoppingCart className="h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24 text-slate-400 mx-auto mb-4 sm:mb-6" />
@@ -49,9 +45,6 @@ export default function CartPage() {
 
   return (
     <div className="min-h-screen bg-slate-900 text-white">
-      {/* Header */}
-      <Navigation />
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 md:py-8">
         <div className="mb-6 sm:mb-8">
           <h1 className="text-2xl sm:text-3xl font-bold mb-2">Корзина</h1>

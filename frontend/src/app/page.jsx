@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import Image from "next/image";
 import Link from "next/link";
 import { Star, ArrowRight, ShoppingCart, Search } from 'lucide-react';
-import Navigation from '../components/Navigation';
 import Footer from '../components/Footer';
 import { useCart } from '@/context/CartContext';
 import AddToCartModal from '../components/modals/AddToCartModal';
@@ -45,8 +44,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-slate-900 text-white">
-      {/* Header */}
-      <Navigation />
       <AddToCartModal show={showModal} onClose={closeModal} />
 
       {/* Hero Section */}

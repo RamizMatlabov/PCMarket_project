@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { getCurrentUser, isAuthenticated, logout, getProfile } from '@/utils/auth';
 import { User, LogOut, Mail, Calendar } from 'lucide-react';
-import Navigation from '@/components/Navigation';
+
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -64,7 +64,6 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-slate-900">
-      <Navigation />
       <div className="py-8 sm:py-10 md:py-12 px-4">
       <div className="max-w-4xl mx-auto">
         <div className="bg-slate-800 rounded-lg shadow-xl p-6 sm:p-7 md:p-8">
