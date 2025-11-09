@@ -175,8 +175,6 @@ export default function CheckoutPage() {
   if (orderSuccess) {
     return (
       <div className="min-h-screen bg-slate-900 text-white flex flex-col">
-        <Navigation />
-
         <div className="flex-1 max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="text-center">
             <CheckCircle className="h-24 w-24 text-green-400 mx-auto mb-6" />

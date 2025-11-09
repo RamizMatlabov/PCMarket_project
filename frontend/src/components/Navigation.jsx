@@ -39,8 +39,16 @@ export default function Navigation() {
     };
   }, []);
 
-  // Handle scroll behavior
+  // Handle scroll behavior - only on client side
   useEffect(() => {
+    // Set initial scroll state on client after hydration
+    const checkScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+    
+    // Check scroll position after component mounts
+    checkScroll();
+    
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
@@ -62,7 +70,7 @@ export default function Navigation() {
   };
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+    <header className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
       isScrolled 
         ? 'bg-slate-900/95 backdrop-blur-sm border-b border-slate-700 shadow-lg' 
         : 'bg-slate-800 border-b border-slate-700'
