@@ -7,11 +7,13 @@ import { Star, ArrowRight, ShoppingCart, Search } from 'lucide-react';
 import Navigation from '../components/Navigation';
 import Footer from '../components/Footer';
 import { useCart } from '@/context/CartContext';
+import AddToCartModal from '../components/modals/AddToCartModal';
 
 export default function Home() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const { addToCart } = useCart();
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     fetchProducts();
@@ -29,10 +31,23 @@ export default function Home() {
     }
   };
 
+  const handleAddToCart = (product) => {
+    addToCart(product);
+    setShowModal(true);
+    setTimeout(() => {
+      setShowModal(false);
+    }, 2000);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+  };
+
   return (
     <div className="min-h-screen bg-slate-900 text-white">
       {/* Header */}
       <Navigation />
+      <AddToCartModal show={showModal} onClose={closeModal} />
 
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-slate-900 via-blue-900 to-slate-900 py-12 sm:py-16 md:py-20">
@@ -120,7 +135,7 @@ export default function Home() {
                       </div>
                     </div>
                     <button
-                      onClick={() => addToCart(product)}
+                      onClick={() => handleAddToCart(product)}
                       disabled={!product.is_in_stock}
                       className={`w-full py-2 sm:py-2.5 px-3 sm:px-4 rounded-lg font-semibold transition-colors text-sm sm:text-base ${
                         product.is_in_stock
