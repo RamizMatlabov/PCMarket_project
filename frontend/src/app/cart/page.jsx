@@ -6,16 +6,27 @@ import Link from "next/link";
 import { ShoppingCart, Trash2, Plus, Minus, CreditCard } from 'lucide-react';
 import Footer from '../../components/Footer';
 import { useCart } from '@/context/CartContext';
+import { isAuthenticated } from '@/utils/auth';
+import AuthRequiredModal from '../../components/modals/AuthRequiredModal';
 
 export default function CartPage() {
   const [loading, setLoading] = useState(false);
   const { cart, updateQuantity, removeFromCart, clearCart, totalItems, totalPrice } = useCart();
-
+  const [showAuthModal, setShowAuthModal] = useState(false);
   const formattedTotalPrice = useMemo(() => totalPrice.toLocaleString(), [totalPrice]);
 
   const proceedToCheckout = () => {
+    // Check if user is authenticated
+    if (!isAuthenticated()) {
+      setShowAuthModal(true);
+      return;
+    }
     // Redirect to checkout page
     window.location.href = '/checkout';
+  };
+
+  const closeAuthModal = () => {
+    setShowAuthModal(false);
   };
 
   if (cart.length === 0) {
@@ -45,6 +56,7 @@ export default function CartPage() {
 
   return (
     <div className="min-h-screen bg-slate-900 text-white">
+      <AuthRequiredModal show={showAuthModal} onClose={closeAuthModal} action="оформить заказ" />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 md:py-8">
         <div className="mb-6 sm:mb-8">
           <h1 className="text-2xl sm:text-3xl font-bold mb-2">Корзина</h1>

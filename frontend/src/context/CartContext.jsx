@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { isAuthenticated } from '@/utils/auth';
 
 const CartContext = createContext(null);
 
@@ -39,6 +40,8 @@ const normalizeCartItem = (item) => {
 
 export function CartProvider({ children }) {
   const [cart, setCart] = useState([]);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [authModalAction, setAuthModalAction] = useState('добавить товар в корзину');
 
   useEffect(() => {
     try {
@@ -90,14 +93,30 @@ export function CartProvider({ children }) {
       }
     };
 
+    const handleAuthChange = () => {
+      // Clear cart when user logs out
+      if (!isAuthenticated()) {
+        setCart([]);
+      }
+    };
+
     window.addEventListener('storage', handleStorage);
+    window.addEventListener('authChange', handleAuthChange);
 
     return () => {
       window.removeEventListener('storage', handleStorage);
+      window.removeEventListener('authChange', handleAuthChange);
     };
   }, []);
 
   const addToCart = (product, quantity = 1) => {
+    // Check if user is authenticated
+    if (!isAuthenticated()) {
+      setAuthModalAction('добавить товар в корзину');
+      setShowAuthModal(true);
+      return false;
+    }
+
     setCart((prevCart) => {
       const normalizedProduct = normalizeCartItem({ ...product, quantity });
       if (!normalizedProduct) {
@@ -115,6 +134,12 @@ export function CartProvider({ children }) {
 
       return [...prevCart, normalizedProduct];
     });
+
+    return true;
+  };
+
+  const closeAuthModal = () => {
+    setShowAuthModal(false);
   };
 
   const updateQuantity = (id, quantity) => {
@@ -156,8 +181,11 @@ export function CartProvider({ children }) {
       clearCart,
       totalItems,
       totalPrice,
+      showAuthModal,
+      authModalAction,
+      closeAuthModal,
     }),
-    [cart, totalItems, totalPrice],
+    [cart, totalItems, totalPrice, showAuthModal, authModalAction],
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

@@ -37,6 +37,7 @@ export const logout = async () => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('user');
+    localStorage.removeItem('cart'); // Clear cart on logout
     triggerAuthChange();
   }
 };

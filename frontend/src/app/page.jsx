@@ -7,11 +7,12 @@ import { Star, ArrowRight, ShoppingCart, Search } from 'lucide-react';
 import Footer from '../components/Footer';
 import { useCart } from '@/context/CartContext';
 import AddToCartModal from '../components/modals/AddToCartModal';
+import AuthRequiredModal from '../components/modals/AuthRequiredModal';
 
 export default function Home() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { addToCart } = useCart();
+  const { addToCart, showAuthModal, authModalAction, closeAuthModal } = useCart();
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
@@ -31,11 +32,12 @@ export default function Home() {
   };
 
   const handleAddToCart = (product) => {
-    addToCart(product);
-    setShowModal(true);
-    setTimeout(() => {
-      setShowModal(false);
-    }, 2000);
+    if (addToCart(product)) {
+      setShowModal(true);
+      setTimeout(() => {
+        setShowModal(false);
+      }, 2000);
+    }
   };
 
   const closeModal = () => {
@@ -45,6 +47,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-slate-900 text-white">
       <AddToCartModal show={showModal} onClose={closeModal} />
+      <AuthRequiredModal show={showAuthModal} onClose={closeAuthModal} action={authModalAction} />
 
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-slate-900 via-blue-900 to-slate-900 py-12 sm:py-16 md:py-20">

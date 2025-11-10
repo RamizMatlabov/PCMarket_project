@@ -6,9 +6,12 @@ import Link from "next/link";
 import { CreditCard, CheckCircle } from 'lucide-react';
 import Footer from '../../components/Footer';
 import { useCart } from '@/context/CartContext';
+import { isAuthenticated } from '@/utils/auth';
+import { useRouter } from 'next/navigation';
 
 export default function CheckoutPage() {
   const { clearCart } = useCart();
+  const router = useRouter();
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(false);
@@ -27,6 +30,12 @@ export default function CheckoutPage() {
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
+    // Check if user is authenticated
+    if (!isAuthenticated()) {
+      router.push('/login');
+      return;
+    }
+
     // Load cart from localStorage
     const savedCart = localStorage.getItem('cart');
     if (savedCart) {
