@@ -56,4 +56,17 @@ api.interceptors.response.use(
   }
 );
 
+export const updateProfile = async (userData) => {
+  try {
+    const response = await api.put('/accounts/profile/', userData);
+    const user = JSON.parse(localStorage.getItem('user'));
+    const updatedUser = { ...user, ...response.data };
+    localStorage.setItem('user', JSON.stringify(updatedUser));
+    return response.data;
+  } catch (error) {
+    console.error('Error updating profile:', error.response ? error.response.data : error.message);
+    throw error.response ? error.response.data : new Error('Update failed');
+  }
+};
+
 export default api;
