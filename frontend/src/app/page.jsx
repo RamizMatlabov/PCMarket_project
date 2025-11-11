@@ -8,10 +8,12 @@ import Footer from '../components/Footer';
 import { useCart } from '@/context/CartContext';
 import AddToCartModal from '../components/modals/AddToCartModal';
 import AuthRequiredModal from '../components/modals/AuthRequiredModal';
+import api from '@/utils/api';
 
 export default function Home() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const { addToCart, showAuthModal, authModalAction, closeAuthModal } = useCart();
   const [showModal, setShowModal] = useState(false);
 
@@ -21,11 +23,15 @@ export default function Home() {
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/products/products/featured/');
-      const data = await response.json();
-      setProducts(data);
+      setLoading(true);
+      setError(null);
+      const response = await api.get('/products/products/featured/');
+      setProducts(response.data || []);
     } catch (error) {
       console.error('Error fetching products:', error);
+      setError('Не удалось загрузить товары. Убедитесь, что сервер запущен.');
+      // Устанавливаем пустой массив в случае ошибки, чтобы не сломать UI
+      setProducts([]);
     } finally {
       setLoading(false);
     }
@@ -92,6 +98,13 @@ export default function Home() {
             </p>
           </div>
 
+          {error && (
+            <div className="bg-red-500/10 border border-red-500 text-red-400 px-4 py-3 rounded-lg mb-6">
+              <p className="font-medium">Ошибка загрузки</p>
+              <p className="text-sm">{error}</p>
+            </div>
+          )}
+          
           {loading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5 md:gap-6">
               {[...Array(4)].map((_, i) => (
@@ -103,27 +116,31 @@ export default function Home() {
                 </div>
               ))}
             </div>
-          ) : (
+          ) : products.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5 md:gap-6">
               {products.map((product) => (
                 <div key={product.id} className="bg-slate-700 rounded-lg overflow-hidden hover:bg-slate-600 transition-colors">
-                  <div className="aspect-w-16 aspect-h-9 bg-slate-600">
-                    {product.image_url ? (
-                      <Image
-                        src={product.image_url}
-                        alt={product.name}
-                        width={300}
-                        height={200}
-                        className="w-full h-48 object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-48 bg-slate-600 flex items-center justify-center">
-                        <span className="text-slate-400">Нет изображения</span>
-                      </div>
-                    )}
-                  </div>
+                  <Link href={`/products/${product.slug}`}>
+                    <div className="aspect-w-16 aspect-h-9 bg-slate-600">
+                      {product.image_url ? (
+                        <Image
+                          src={product.image_url}
+                          alt={product.name}
+                          width={300}
+                          height={200}
+                          className="w-full h-48 object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-48 bg-slate-600 flex items-center justify-center">
+                          <span className="text-slate-400">Нет изображения</span>
+                        </div>
+                      )}
+                    </div>
+                  </Link>
                   <div className="p-4 sm:p-5 md:p-6">
-                    <h3 className="text-base sm:text-lg font-semibold mb-2 line-clamp-2">{product.name}</h3>
+                    <Link href={`/products/${product.slug}`} className="hover:underline">
+                      <h3 className="text-base sm:text-lg font-semibold mb-2 line-clamp-2">{product.name}</h3>
+                    </Link>
                     <p className="text-slate-400 text-xs sm:text-sm mb-2 sm:mb-3">{product.brand}</p>
                     <div className="flex items-center justify-between mb-3 sm:mb-4">
                       <span className="text-lg sm:text-xl md:text-2xl font-bold text-blue-400">
@@ -149,7 +166,11 @@ export default function Home() {
                 </div>
               ))}
             </div>
-          )}
+          ) : !loading && !error ? (
+            <div className="text-center py-12">
+              <p className="text-slate-400 text-lg">Нет доступных товаров</p>
+            </div>
+          ) : null}
         </div>
       </section>
 

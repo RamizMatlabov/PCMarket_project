@@ -17,7 +17,7 @@ export default function ProductsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedType, setSelectedType] = useState('');
-  const [sortBy, setSortBy] = useState('created_at');
+  const [sortBy, setSortBy] = useState('-created_at');
   const { addToCart, showAuthModal, authModalAction, closeAuthModal } = useCart();
   const searchParams = useSearchParams();
   const [showModal, setShowModal] = useState(false);
@@ -43,6 +43,11 @@ export default function ProductsPage() {
       let url = 'http://localhost:8000/api/products/products/';
       const params = new URLSearchParams();
       
+      // Когда выбраны "Все категории", увеличиваем размер страницы чтобы получить все товары
+      if (!selectedCategory) {
+        params.append('page_size', '1000'); // Большое число для получения всех товаров
+      }
+      
       if (selectedCategory) params.append('category', selectedCategory);
       if (selectedType) params.append('product_type', selectedType);
       if (searchTerm) params.append('search', searchTerm);
@@ -54,9 +59,18 @@ export default function ProductsPage() {
       
       const response = await fetch(url);
       const data = await response.json();
-      setProducts(data.results || data);
+      
+      // Обрабатываем пагинацию: если есть results, используем их, иначе весь массив
+      if (data.results) {
+        setProducts(data.results);
+      } else if (Array.isArray(data)) {
+        setProducts(data);
+      } else {
+        setProducts([]);
+      }
     } catch (error) {
       console.error('Error fetching products:', error);
+      setProducts([]);
     } finally {
       setLoading(false);
     }
@@ -85,7 +99,7 @@ export default function ProductsPage() {
     setSearchTerm('');
     setSelectedCategory('');
     setSelectedType('');
-    setSortBy('created_at');
+    setSortBy('-created_at');
   };
 
   const closeModal = () => {
@@ -149,8 +163,10 @@ export default function ProductsPage() {
                 >
                   <option value="">Все типы</option>
                   <option value="computer">Компьютеры</option>
+                  <option value="all-in-one">Моноблоки</option>
                   <option value="component">Комплектующие</option>
                   <option value="accessory">Аксессуары</option>
+                  <option value="other">Другое</option>
                 </select>
               </div>
 
@@ -162,7 +178,8 @@ export default function ProductsPage() {
                   onChange={(e) => setSortBy(e.target.value)}
                   className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
-                  <option value="created_at">По дате добавления</option>
+                  <option value="-created_at">По дате добавления (новые сначала)</option>
+                  <option value="created_at">По дате добавления (старые сначала)</option>
                   <option value="price">По цене (возрастание)</option>
                   <option value="-price">По цене (убывание)</option>
                   <option value="name">По названию</option>
@@ -202,30 +219,36 @@ export default function ProductsPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
                 {products.map((product) => (
                   <div key={product.id} className="bg-slate-800 rounded-lg overflow-hidden hover:bg-slate-700 transition-colors">
-                    <div className="aspect-w-16 aspect-h-9 bg-slate-700">
-                      {product.image_url ? (
-                        <Image
-                          src={product.image_url}
-                          alt={product.name}
-                          width={300}
-                          height={200}
-                          className="w-full h-40 sm:h-44 md:h-48 object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-40 sm:h-44 md:h-48 bg-slate-700 flex items-center justify-center">
-                          <span className="text-slate-400 text-xs sm:text-sm">Нет изображения</span>
-                        </div>
-                      )}
-                    </div>
+                    <Link href={`/products/${product.slug}`}>
+                      <div className="aspect-w-16 aspect-h-9 bg-slate-700">
+                        {product.image_url ? (
+                          <Image
+                            src={product.image_url}
+                            alt={product.name}
+                            width={300}
+                            height={200}
+                            className="w-full h-40 sm:h-44 md:h-48 object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-40 sm:h-44 md:h-48 bg-slate-700 flex items-center justify-center">
+                            <span className="text-slate-400 text-xs sm:text-sm">Нет изображения</span>
+                          </div>
+                        )}
+                      </div>
+                    </Link>
                     <div className="p-4 sm:p-5 md:p-6">
                       <div className="flex items-center justify-between mb-2 flex-wrap gap-1 sm:gap-2">
                         <span className="text-xs bg-blue-600 text-white px-2 py-1 rounded">
                           {product.product_type === 'computer' ? 'Компьютер' : 
-                           product.product_type === 'component' ? 'Комплектующее' : 'Аксессуар'}
+                           product.product_type === 'all-in-one' ? 'Моноблок' :
+                           product.product_type === 'component' ? 'Комплектующее' : 
+                           product.product_type === 'accessory' ? 'Аксессуар' : 'Другое'}
                         </span>
                         <span className="text-xs text-slate-400">{product.category.name}</span>
                       </div>
-                      <h3 className="text-base sm:text-lg font-semibold mb-2 line-clamp-2">{product.name}</h3>
+                      <Link href={`/products/${product.slug}`} className="hover:underline">
+                        <h3 className="text-base sm:text-lg font-semibold mb-2 line-clamp-2">{product.name}</h3>
+                      </Link>
                       <p className="text-slate-400 text-xs sm:text-sm mb-2 sm:mb-3">{product.brand} {product.model}</p>
                       <div className="flex items-center justify-between mb-3 sm:mb-4">
                         <span className="text-lg sm:text-xl md:text-2xl font-bold text-blue-400">

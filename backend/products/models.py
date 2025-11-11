@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator
+from django.contrib.auth.models import User
 
 
 class Category(models.Model):
@@ -21,8 +22,10 @@ class Category(models.Model):
 class Product(models.Model):
     PRODUCT_TYPES = [
         ('computer', 'Computer'),
+        ('all-in-one', 'All-in-One'),
         ('component', 'Component'),
         ('accessory', 'Accessory'),
+        ('other', 'Other'),
     ]
 
     name = models.CharField(max_length=200)
@@ -36,6 +39,7 @@ class Product(models.Model):
     image = models.ImageField(upload_to='products/', blank=True, null=True)
     stock_quantity = models.PositiveIntegerField(default=0)
     is_active = models.BooleanField(default=True)
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='created_products')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

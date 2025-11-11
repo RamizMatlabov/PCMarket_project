@@ -97,6 +97,11 @@ export default function Navigation() {
             <Link href="/products" className="text-white hover:text-blue-400 transition-colors">
               Каталог
             </Link>
+            {authenticated && (
+              <Link href="/add-product" className="text-white hover:text-blue-400 transition-colors">
+                Добавить товар
+              </Link>
+            )}
             <Link href="/about" className="text-white hover:text-blue-400 transition-colors">
               О нас
             </Link>
@@ -160,6 +165,11 @@ export default function Navigation() {
               <Link href="/products" className="block text-white hover:text-blue-400 transition-colors py-2">
                 Каталог
               </Link>
+              {authenticated && (
+                <Link href="/add-product" className="block text-white hover:text-blue-400 transition-colors py-2">
+                  Добавить товар
+                </Link>
+              )}
               <Link href="/about" className="block text-white hover:text-blue-400 transition-colors py-2">
                 О нас
               </Link>
