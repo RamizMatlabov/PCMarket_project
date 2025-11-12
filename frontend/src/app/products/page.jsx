@@ -31,6 +31,11 @@ export default function ProductsPage() {
     if (type) {
       setSelectedType(type);
     }
+
+    const search = searchParams.get('search');
+    if (search) {
+      setSearchTerm(search);
+    }
   }, [searchParams]);
 
   useEffect(() => {

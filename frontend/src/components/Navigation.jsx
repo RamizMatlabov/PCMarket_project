@@ -13,8 +13,19 @@ export default function Navigation() {
   const [authenticated, setAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [suggestions, setSuggestions] = useState([]);
+  const [suggestionsOpen, setSuggestionsOpen] = useState(false);
+  const [suggestionsLoading, setSuggestionsLoading] = useState(false);
+  const [debouncedQuery, setDebouncedQuery] = useState('');
   const router = useRouter();
   const { totalItems } = useCart();
+
+  const clearSearch = () => {
+    setSearchQuery('');
+    setSuggestions([]);
+    setSuggestionsOpen(false);
+  };
 
   useEffect(() => {
     const checkAuth = () => {
@@ -69,6 +80,49 @@ export default function Navigation() {
     }
   };
 
+  // Debounce search query to avoid excessive API calls
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedQuery(searchQuery.trim()), 300);
+    return () => clearTimeout(t);
+  }, [searchQuery]);
+
+  // Fetch suggestions when debounced query changes
+  useEffect(() => {
+    const q = debouncedQuery;
+    if (!q) {
+      setSuggestions([]);
+      setSuggestionsOpen(false);
+      return;
+    }
+
+    let aborted = false;
+    const fetchSuggestions = async () => {
+      try {
+        setSuggestionsLoading(true);
+        const url = `http://localhost:8000/api/products/products/?search=${encodeURIComponent(q)}&page_size=20`;
+        const res = await fetch(url);
+        const data = await res.json();
+        const items = Array.isArray(data) ? data : (data.results || []);
+        if (!aborted) {
+          setSuggestions(items);
+          setSuggestionsOpen(true);
+        }
+      } catch (e) {
+        if (!aborted) {
+          setSuggestions([]);
+          setSuggestionsOpen(true);
+        }
+      } finally {
+        if (!aborted) setSuggestionsLoading(false);
+      }
+    };
+    fetchSuggestions();
+
+    return () => {
+      aborted = true;
+    };
+  }, [debouncedQuery]);
+
   return (
     <header className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
       isScrolled 
@@ -112,13 +166,74 @@ export default function Navigation() {
 
           {/* Search and Cart */}
           <div className="flex items-center space-x-2 sm:space-x-3 md:space-x-4">
-            <div className="hidden sm:flex items-center bg-slate-700 rounded-lg px-2 sm:px-3 py-1.5 sm:py-2">
+            <div className="hidden sm:flex items-center bg-slate-700 rounded-lg px-2 sm:px-3 py-1.5 sm:py-2 relative">
               <Search className="h-3 w-3 sm:h-4 sm:w-4 text-slate-400 mr-1.5 sm:mr-2" />
               <input
                 type="text"
                 placeholder="Поиск товаров..."
-                className="bg-transparent text-white placeholder-slate-400 focus:outline-none text-xs sm:text-sm w-24 sm:w-32 md:w-40"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onFocus={() => {
+                  if (suggestions.length > 0) setSuggestionsOpen(true);
+                }}
+                onBlur={() => {
+                  // Delay closing to allow click on suggestion
+                  setTimeout(() => setSuggestionsOpen(false), 150);
+                }}
+                className="bg-transparent text-white placeholder-slate-400 focus:outline-none text-xs sm:text-sm w-24 sm:w-32 md:w-40 pr-5 sm:pr-6"
               />
+              {searchQuery.length > 0 && (
+                <button
+                  type="button"
+                  aria-label="Очистить поиск"
+                  onClick={clearSearch}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-0.5 sm:p-1 rounded hover:bg-slate-600 focus:outline-none"
+                >
+                  <X className="h-3 w-3 sm:h-4 sm:w-4 text-slate-300" />
+                </button>
+              )}
+              {suggestionsOpen && (
+                <div className="absolute left-0 top-full mt-2 w-60 sm:w-72 md:w-80 bg-slate-800 border border-slate-700 rounded-lg shadow-lg max-h-64 overflow-auto z-50">
+                  {suggestionsLoading ? (
+                    <div className="px-3 py-2 text-slate-300 text-sm">Загрузка...</div>
+                  ) : suggestions.length > 0 ? (
+                    <ul className="py-1">
+                      {suggestions.map((item) => (
+                        <li key={item.id} className="hover:bg-slate-700">
+                          <a
+                            href={`/products/${item.slug}`}
+                            onMouseDown={(e) => {
+                              e.preventDefault();
+                              setSuggestionsOpen(false);
+                              router.push(`/products/${item.slug}`);
+                            }}
+                            className="flex items-center px-3 py-2 text-sm text-white"
+                          >
+                            <span className="flex-1 line-clamp-1">{item.name}</span>
+                            <span className="ml-2 text-blue-300 whitespace-nowrap">{item.price} USD</span>
+                          </a>
+                        </li>
+                      ))}
+                      <li className="border-t border-slate-700">
+                        <a
+                          href={`/products?search=${encodeURIComponent(searchQuery.trim())}`}
+                          onMouseDown={(e) => {
+                            e.preventDefault();
+                            setSuggestionsOpen(false);
+                            const q = searchQuery.trim();
+                            router.push(q ? `/products?search=${encodeURIComponent(q)}` : '/products');
+                          }}
+                          className="block px-3 py-2 text-sm text-blue-400 hover:text-blue-300"
+                        >
+                          Показать все результаты
+                        </a>
+                      </li>
+                    </ul>
+                  ) : (
+                    <div className="px-3 py-2 text-slate-300 text-sm">Ничего не найдено</div>
+                  )}
+                </div>
+              )}
             </div>
             <Link href="/cart" className="relative p-1.5 sm:p-2 text-white hover:text-blue-400 transition-colors">
               <ShoppingCart className="h-5 w-5 sm:h-6 sm:w-6" />

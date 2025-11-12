@@ -8,6 +8,8 @@ import { ArrowLeft, ShoppingCart, Edit, Trash2 } from 'lucide-react';
 import api, { deleteProduct } from '@/utils/api';
 import { useCart } from '@/context/CartContext';
 import { getCurrentUser, isAuthenticated } from '@/utils/auth';
+import AddToCartModal from '../../../components/modals/AddToCartModal';
+import AuthRequiredModal from '../../../components/modals/AuthRequiredModal';
 
 export default function ProductDetailPage() {
   const { slug } = useParams();
@@ -17,8 +19,9 @@ export default function ProductDetailPage() {
   const [error, setError] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const { addToCart, removeFromCart } = useCart();
+  const { addToCart, removeFromCart, showAuthModal, authModalAction, closeAuthModal } = useCart();
   const [currentUser, setCurrentUser] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     if (isAuthenticated()) {
@@ -45,8 +48,17 @@ export default function ProductDetailPage() {
 
   const handleAddToCart = () => {
     if (product) {
-      addToCart(product);
+      if (addToCart(product)) {
+        setShowModal(true);
+        setTimeout(() => {
+          setShowModal(false);
+        }, 2000);
+      }
     }
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
   };
 
   const handleDelete = async () => {
@@ -118,6 +130,8 @@ export default function ProductDetailPage() {
 
   return (
     <div className="min-h-screen bg-slate-900 text-white">
+      <AddToCartModal show={showModal} onClose={closeModal} />
+      <AuthRequiredModal show={showAuthModal} onClose={closeAuthModal} action={authModalAction} />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
         <div className="mb-4">
           <Link href="/products" className="inline-flex items-center text-slate-300 hover:text-white">

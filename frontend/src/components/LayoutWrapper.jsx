@@ -1,7 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Navigation from './Navigation';
+import dynamic from 'next/dynamic';
+
+const Navigation = dynamic(() => import('./Navigation'), { ssr: false });
 
 export default function LayoutWrapper({ children }) {
   const [headerHeight, setHeaderHeight] = useState(0);
