@@ -36,7 +36,7 @@ export default function LayoutWrapper({ children }) {
   return (
     <>
       <Navigation />
-      <main style={{ paddingTop: `${headerHeight}px` }}>
+      <main style={{ paddingTop: `${headerHeight + 50}px` }}>
         {children}
       </main>
     </>
