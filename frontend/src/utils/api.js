@@ -1,8 +1,9 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:8000/api';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 const api = axios.create({
+  // Используем baseURL без /api, чтобы можно было добавлять полный путь
   baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
@@ -20,6 +21,12 @@ api.interceptors.request.use(
     if (config.data instanceof FormData) {
       delete config.headers['Content-Type'];
     }
+    // Логируем URL для отладки
+    const fullURL = config.baseURL && config.url 
+      ? (config.baseURL.endsWith('/') ? config.baseURL.slice(0, -1) : config.baseURL) + 
+        (config.url.startsWith('/') ? config.url : '/' + config.url)
+      : config.url || config.baseURL;
+    console.log('API Request:', config.method?.toUpperCase(), fullURL);
     return config;
   },
   (error) => {
@@ -46,7 +53,7 @@ api.interceptors.response.use(
       const refreshToken = localStorage.getItem('refreshToken');
       if (refreshToken) {
         try {
-          const response = await axios.post(`${API_BASE_URL}/accounts/token/refresh/`, {
+          const response = await axios.post(`${API_BASE_URL}/api/accounts/token/refresh/`, {
             refresh: refreshToken,
           });
           const { access } = response.data;
@@ -69,7 +76,7 @@ api.interceptors.response.use(
 
 export const updateProfile = async (userData) => {
   try {
-    const response = await api.put('/accounts/profile/', userData);
+    const response = await api.put('/api/accounts/profile/', userData);
     const user = JSON.parse(localStorage.getItem('user'));
     const updatedUser = { ...user, ...response.data };
     localStorage.setItem('user', JSON.stringify(updatedUser));
@@ -82,7 +89,7 @@ export const updateProfile = async (userData) => {
 
 export const getCategories = async () => {
   try {
-    const response = await api.get('/products/categories/');
+    const response = await api.get('/api/products/categories/');
     // Убеждаемся, что возвращаем массив
     const data = response.data;
     if (Array.isArray(data)) {
@@ -116,7 +123,7 @@ export const createProduct = async (productData) => {
       formData.append('image', productData.image);
     }
     
-    const response = await api.post('/products/products/create/', formData);
+    const response = await api.post('/api/products/products/create/', formData);
     return response.data;
   } catch (error) {
     console.error('Error creating product:', error.response ? error.response.data : error.message);
@@ -145,7 +152,7 @@ export const updateProduct = async (slug, productData) => {
       formData.append('image', productData.image);
     }
     
-    const response = await api.patch(`/products/products/${slug}/update/`, formData);
+    const response = await api.patch(`/api/products/products/${slug}/update/`, formData);
     return response.data;
   } catch (error) {
     console.error('Error updating product:', error.response ? error.response.data : error.message);
@@ -155,7 +162,7 @@ export const updateProduct = async (slug, productData) => {
 
 export const deleteProduct = async (slug) => {
   try {
-    const response = await api.delete(`/products/products/${slug}/delete/`);
+    const response = await api.delete(`/api/products/products/${slug}/delete/`);
     return response.data;
   } catch (error) {
     console.error('Error deleting product:', error.response ? error.response.data : error.message);

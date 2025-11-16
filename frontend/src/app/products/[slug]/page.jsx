@@ -35,7 +35,7 @@ export default function ProductDetailPage() {
       try {
         setLoading(true);
         setError(null);
-        const response = await api.get(`/products/products/${slug}/`);
+        const response = await api.get(`/api/products/products/${slug}/`);
         setProduct(response.data);
       } catch (e) {
         setError('Товар не найден или произошла ошибка загрузки.');

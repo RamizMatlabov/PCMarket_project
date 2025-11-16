@@ -7,30 +7,51 @@ const triggerAuthChange = () => {
 };
 
 export const register = async (userData) => {
-  const response = await api.post('/accounts/register/', userData);
-  if (response.data.tokens) {
-    localStorage.setItem('accessToken', response.data.tokens.access);
-    localStorage.setItem('refreshToken', response.data.tokens.refresh);
-    localStorage.setItem('user', JSON.stringify(response.data.user));
-    triggerAuthChange();
+  try {
+    const response = await api.post('/api/accounts/register/', userData);
+    if (response.data.tokens) {
+      localStorage.setItem('accessToken', response.data.tokens.access);
+      localStorage.setItem('refreshToken', response.data.tokens.refresh);
+      localStorage.setItem('user', JSON.stringify(response.data.user));
+      triggerAuthChange();
+    }
+    return response.data;
+  } catch (error) {
+    console.error('Register API error:', error);
+    throw error;
   }
-  return response.data;
 };
 
 export const login = async (username, password) => {
-  const response = await api.post('/accounts/login/', { username, password });
-  if (response.data.tokens) {
-    localStorage.setItem('accessToken', response.data.tokens.access);
-    localStorage.setItem('refreshToken', response.data.tokens.refresh);
-    localStorage.setItem('user', JSON.stringify(response.data.user));
-    triggerAuthChange();
+  try {
+    console.log('Attempting login with:', { username, password: '***' });
+    // Используем полный путь /api/accounts/login/
+    const response = await api.post('/api/accounts/login/', { username, password });
+    console.log('Login response received');
+    if (response.data.tokens) {
+      localStorage.setItem('accessToken', response.data.tokens.access);
+      localStorage.setItem('refreshToken', response.data.tokens.refresh);
+      localStorage.setItem('user', JSON.stringify(response.data.user));
+      triggerAuthChange();
+    }
+    return response.data;
+  } catch (error) {
+    console.error('Login API error:', error);
+    console.error('Error details:', {
+      message: error.message,
+      response: error.response?.data,
+      status: error.response?.status,
+      url: error.config?.url,
+      baseURL: error.config?.baseURL,
+      fullURL: error.config ? (error.config.baseURL || '') + (error.config.url || '') : 'unknown'
+    });
+    throw error;
   }
-  return response.data;
 };
 
 export const logout = async () => {
   try {
-    await api.post('/accounts/logout/');
+    await api.post('/api/accounts/logout/');
   } catch (error) {
     console.error('Logout error:', error);
   } finally {
@@ -53,7 +74,7 @@ export const isAuthenticated = () => {
 };
 
 export const getProfile = async () => {
-  const response = await api.get('/accounts/profile/');
+  const response = await api.get('/api/accounts/profile/');
   localStorage.setItem('user', JSON.stringify(response.data));
   return response.data;
 };

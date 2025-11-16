@@ -29,7 +29,23 @@ export default function LoginPage() {
       await login(formData.username, formData.password);
       router.push('/profile');
     } catch (err) {
-      setError(err.response?.data?.error || 'Ошибка при входе');
+      console.error('Login error:', err);
+      if (err.response?.data?.error) {
+        setError(err.response.data.error);
+      } else if (err.response?.data) {
+        // Если есть другие данные об ошибке
+        const errorData = err.response.data;
+        if (typeof errorData === 'object') {
+          const errorMessages = Object.values(errorData).flat().join(', ');
+          setError(errorMessages || 'Ошибка при входе');
+        } else {
+          setError(String(errorData) || 'Ошибка при входе');
+        }
+      } else if (err.message) {
+        setError(err.message);
+      } else {
+        setError('Ошибка при входе. Проверьте подключение к серверу.');
+      }
     } finally {
       setLoading(false);
     }

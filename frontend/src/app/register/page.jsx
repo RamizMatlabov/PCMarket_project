@@ -39,12 +39,19 @@ export default function RegisterPage() {
       await register(formData);
       router.push('/profile');
     } catch (err) {
-      const errorData = err.response?.data;
-      if (typeof errorData === 'object' && errorData !== null) {
-        const errorMessages = Object.values(errorData).flat().join(', ');
-        setError(errorMessages);
+      console.error('Register error:', err);
+      if (err.response?.data) {
+        const errorData = err.response.data;
+        if (typeof errorData === 'object' && errorData !== null) {
+          const errorMessages = Object.values(errorData).flat().join(', ');
+          setError(errorMessages || 'Ошибка при регистрации');
+        } else {
+          setError(String(errorData) || 'Ошибка при регистрации');
+        }
+      } else if (err.message) {
+        setError(err.message);
       } else {
-        setError('Ошибка при регистрации');
+        setError('Ошибка при регистрации. Проверьте подключение к серверу.');
       }
     } finally {
       setLoading(false);

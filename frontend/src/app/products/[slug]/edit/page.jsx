@@ -53,7 +53,7 @@ export default function EditProductPage() {
         }
 
         // Load product
-        const productResponse = await api.get(`/products/products/${slug}/`);
+        const productResponse = await api.get(`/api/products/products/${slug}/`);
         const product = productResponse.data;
 
         // Check if user is the creator

@@ -25,12 +25,67 @@ export default function Home() {
     try {
       setLoading(true);
       setError(null);
-      const response = await api.get('/products/products/featured/');
-      setProducts(response.data || []);
+      
+      // Сначала пытаемся получить featured продукты
+      try {
+        const response = await api.get('/api/products/products/featured/');
+        if (response.data && Array.isArray(response.data) && response.data.length > 0) {
+          setProducts(response.data);
+          return;
+        }
+      } catch (featuredError) {
+        console.warn('Featured products endpoint failed, trying regular products:', featuredError);
+      }
+      
+      // Если featured не сработал, используем прямой fetch как в products/page.jsx
+      try {
+        const url = 'http://localhost:8000/api/products/products/?page_size=8';
+        const response = await fetch(url);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        // Обрабатываем пагинацию: если есть results, используем их, иначе весь массив
+        if (data.results) {
+          setProducts(data.results);
+        } else if (Array.isArray(data)) {
+          setProducts(data.slice(0, 8));
+        } else {
+          setProducts([]);
+        }
+      } catch (fetchError) {
+        console.error('Fetch error:', fetchError);
+        // Последняя попытка через api с параметрами
+        try {
+          const response = await api.get('/api/products/products/', {
+            params: {
+              page_size: 8
+            }
+          });
+          if (response.data && response.data.results) {
+            setProducts(response.data.results);
+          } else if (Array.isArray(response.data)) {
+            setProducts(response.data.slice(0, 8));
+          } else {
+            setProducts([]);
+          }
+        } catch (apiError) {
+          console.error('API error:', apiError);
+          throw apiError;
+        }
+      }
     } catch (error) {
       console.error('Error fetching products:', error);
-      setError('Не удалось загрузить товары. Убедитесь, что сервер запущен.');
-      // Устанавливаем пустой массив в случае ошибки, чтобы не сломать UI
+      console.error('Error details:', {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status,
+        url: error.config?.url || error.response?.config?.url
+      });
+      setError('Не удалось загрузить товары. Убедитесь, что сервер запущен на http://localhost:8000');
       setProducts([]);
     } finally {
       setLoading(false);
