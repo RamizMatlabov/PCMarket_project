@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Image from "next/image";
 import Link from "next/link";
@@ -9,6 +9,23 @@ import Footer from '../../components/Footer';
 import { useCart } from '@/context/CartContext';
 import AddToCartModal from '../../components/modals/AddToCartModal';
 import AuthRequiredModal from '../../components/modals/AuthRequiredModal';
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
+function URLParamsSync({ onType, onSearch }) {
+  const sp = useSearchParams();
+  useEffect(() => {
+    const type = sp.get('type');
+    if (type) {
+      onType(type);
+    }
+    const search = sp.get('search');
+    if (search) {
+      onSearch(search);
+    }
+  }, [sp, onType, onSearch]);
+  return null;
+}
 
 export default function ProductsPage() {
   const [products, setProducts] = useState([]);
@@ -19,24 +36,11 @@ export default function ProductsPage() {
   const [selectedType, setSelectedType] = useState('');
   const [sortBy, setSortBy] = useState('-created_at');
   const { addToCart, showAuthModal, authModalAction, closeAuthModal } = useCart();
-  const searchParams = useSearchParams();
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    fetchProducts();
     fetchCategories();
-    
-    // Get filters from URL params
-    const type = searchParams.get('type');
-    if (type) {
-      setSelectedType(type);
-    }
-
-    const search = searchParams.get('search');
-    if (search) {
-      setSearchTerm(search);
-    }
-  }, [searchParams]);
+  }, []);
 
   useEffect(() => {
     fetchProducts();
@@ -45,7 +49,7 @@ export default function ProductsPage() {
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      let url = 'http://localhost:8000/api/products/products/';
+      let url = API_BASE_URL + '/api/products/products/';
       const params = new URLSearchParams();
       
       // Когда выбраны "Все категории", увеличиваем размер страницы чтобы получить все товары
@@ -83,7 +87,7 @@ export default function ProductsPage() {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/products/categories/');
+      const response = await fetch(API_BASE_URL + '/api/products/categories/');
       const data = await response.json();
       setCategories(data.results || data);
     } catch (error) {
@@ -113,6 +117,9 @@ export default function ProductsPage() {
 
   return (
     <div className="min-h-screen bg-slate-900 text-white">
+      <Suspense fallback={null}>
+        <URLParamsSync onType={setSelectedType} onSearch={setSearchTerm} />
+      </Suspense>
       <AddToCartModal show={showModal} onClose={closeModal} />
       <AuthRequiredModal show={showAuthModal} onClose={closeAuthModal} action={authModalAction} />
 
