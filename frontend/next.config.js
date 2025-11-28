@@ -11,6 +11,11 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'pcmarket-project.onrender.com',
+        pathname: '/media/**',
+      },
+      {
+        protocol: 'https',
         hostname: '**',
         pathname: '/media/**',
       },

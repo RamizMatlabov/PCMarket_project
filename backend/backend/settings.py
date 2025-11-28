@@ -27,6 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     "pcmarket-project.onrender.com",
+    "pcmarket-project.vercel.app",
     "localhost",
     "127.0.0.1",
 ]
@@ -140,6 +141,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3001",
     "http://127.0.0.1:3001",
     "https://pcmarket-project.onrender.com",
+    "https://pcmarket-project.vercel.app",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
