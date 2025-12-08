@@ -64,10 +64,17 @@ export default function EditProductPage() {
         }
 
         // Populate form with product data
+        const normalizedPrice = (() => {
+          const p = product.price;
+          if (p === null || p === undefined) return '';
+          const num = parseFloat(String(p).replace(/[^\d.]/g, ''));
+          return isNaN(num) ? '' : String(num);
+        })();
+
         setFormData({
           name: product.name || '',
           description: product.description || '',
-          price: product.price || '',
+          price: normalizedPrice,
           category: product.category?.id || '',
           product_type: product.product_type || '',
           brand: product.brand || '',
@@ -145,13 +152,21 @@ export default function EditProductPage() {
         is_active: formData.is_active,
       };
 
-      await updateProduct(slug, productData);
+      const updated = await updateProduct(slug, productData);
       setSuccess(true);
-      
-      // Redirect to product page after 2 seconds
-      setTimeout(() => {
-        router.push(`/products/${slug}`);
-      }, 2000);
+
+      let targetSlug = (updated && updated.slug) ? updated.slug : null;
+      if (!targetSlug) {
+        try {
+          const res = await api.get('/api/products/products/', { params: { search: productData.name, page_size: 1 } });
+          const items = Array.isArray(res.data) ? res.data : (res.data.results || []);
+          targetSlug = items && items.length > 0 ? items[0].slug : null;
+        } catch (e) {
+          // ignore and fallback to old slug
+        }
+      }
+
+      router.push(`/products/${targetSlug || slug}`);
     } catch (error) {
       console.error('Error updating product:', error);
       if (error.name || error.product_type || error.category) {

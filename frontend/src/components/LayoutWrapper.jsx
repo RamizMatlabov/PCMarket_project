@@ -16,27 +16,40 @@ export default function LayoutWrapper({ children }) {
       }
     };
 
-    // Update height on mount and window resize
     updateHeaderHeight();
     window.addEventListener('resize', updateHeaderHeight);
-    
-    // Also update when mobile menu opens/closes
-    const observer = new MutationObserver(updateHeaderHeight);
-    const header = document.querySelector('header');
-    if (header) {
-      observer.observe(header, { attributes: true, childList: true, subtree: true });
+
+    const headerObserver = new MutationObserver(updateHeaderHeight);
+
+    const tryAttach = () => {
+      const h = document.querySelector('header');
+      if (h) {
+        updateHeaderHeight();
+        headerObserver.observe(h, { attributes: true, childList: true, subtree: true });
+        return true;
+      }
+      return false;
+    };
+
+    if (!tryAttach()) {
+      const bodyObserver = new MutationObserver(() => {
+        if (tryAttach()) {
+          bodyObserver.disconnect();
+        }
+      });
+      bodyObserver.observe(document.body, { childList: true, subtree: true });
     }
 
     return () => {
       window.removeEventListener('resize', updateHeaderHeight);
-      observer.disconnect();
+      headerObserver.disconnect();
     };
   }, []);
 
   return (
     <>
       <Navigation />
-      <main style={{ paddingTop: `${headerHeight}px` }}>
+      <main style={{ paddingTop: headerHeight }}>
         {children}
       </main>
     </>
