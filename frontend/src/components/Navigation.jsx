@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Image from "next/image";
 import Link from "next/link";
 import { ShoppingCart, Search, Menu, X, User } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { isAuthenticated, getCurrentUser, logout } from '@/utils/auth';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
@@ -124,44 +125,69 @@ export default function Navigation() {
   }, [debouncedQuery]);
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
-      isScrolled 
-        ? 'bg-slate-900/95 backdrop-blur-sm border-b border-slate-700 shadow-lg' 
-        : 'bg-slate-800 border-b border-slate-700'
-    }`}>
+    <motion.header
+      className={`fixed top-0 left-0 right-0 z-40 ${
+        isScrolled 
+          ? 'bg-slate-900/95 backdrop-blur-sm border-b border-slate-700 shadow-lg' 
+          : 'bg-slate-800 border-b border-slate-700'
+      }`}
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
-            <Image
-              src="/logo1.png"
-              alt="PCMarket"
-              width={40}
-              height={40}
-              className="h-10 w-auto"
-            />
-            <span className="text-xl font-bold text-blue-400">PCMarket</span>
+            <motion.div
+              whileHover={{ rotate: [0, -10, 10, -10, 0] }}
+              transition={{ duration: 0.5 }}
+            >
+              <Image
+                src="/logo1.png"
+                alt="PCMarket"
+                width={40}
+                height={40}
+                className="h-10 w-auto"
+              />
+            </motion.div>
+            <motion.span
+              className="text-xl font-bold text-blue-400"
+              whileHover={{ scale: 1.1 }}
+            >
+              PCMarket
+            </motion.span>
           </Link>
 
           {/* Navigation */}
           <nav className="hidden md:flex space-x-8">
-            <Link href="/" className="text-white hover:text-blue-400 transition-colors">
-              Главная
-            </Link>
-            <Link href="/products" className="text-white hover:text-blue-400 transition-colors">
-              Каталог
-            </Link>
-            {authenticated && (
-              <Link href="/add-product" className="text-white hover:text-blue-400 transition-colors">
-                Добавить товар
-              </Link>
-            )}
-            <Link href="/about" className="text-white hover:text-blue-400 transition-colors">
-              О нас
-            </Link>
-            <Link href="/contact" className="text-white hover:text-blue-400 transition-colors">
-              Контакты
-            </Link>
+            {[
+              { href: '/', label: 'Главная' },
+              { href: '/products', label: 'Каталог' },
+              ...(authenticated ? [{ href: '/add-product', label: 'Добавить товар' }] : []),
+              { href: '/about', label: 'О нас' },
+              { href: '/contact', label: 'Контакты' },
+            ].map((item, index) => (
+              <motion.div
+                key={item.href}
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <Link
+                  href={item.href}
+                  className="text-white hover:text-blue-400 transition-colors relative group"
+                >
+                  {item.label}
+                  <motion.div
+                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-400"
+                    initial={{ scaleX: 0 }}
+                    whileHover={{ scaleX: 1 }}
+                    transition={{ duration: 0.3 }}
+                  />
+                </Link>
+              </motion.div>
+            ))}
           </nav>
 
           {/* Search and Cart */}
@@ -236,11 +262,22 @@ export default function Navigation() {
               )}
             </div>
             <Link href="/cart" className="relative p-1.5 sm:p-2 text-white hover:text-blue-400 transition-colors">
-              <ShoppingCart className="h-5 w-5 sm:h-6 sm:w-6" />
+              <motion.div
+                whileHover={{ scale: 1.1, rotate: [0, -10, 10, -10, 0] }}
+                transition={{ duration: 0.5 }}
+              >
+                <ShoppingCart className="h-5 w-5 sm:h-6 sm:w-6" />
+              </motion.div>
               {totalItems > 0 && (
-                <span className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full h-4 w-4 sm:h-5 sm:w-5 flex items-center justify-center text-xs">
+                <motion.span
+                  className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full h-4 w-4 sm:h-5 sm:w-5 flex items-center justify-center text-xs"
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                  key={totalItems}
+                >
                   {totalItems}
-                </span>
+                </motion.span>
               )}
             </Link>
             
@@ -261,62 +298,153 @@ export default function Navigation() {
               </div>
             )}
             
-            <button
+            <motion.button
               className="md:hidden p-1.5 sm:p-2 text-white hover:text-blue-400 transition-colors"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              whileTap={{ scale: 0.9 }}
             >
-              {mobileMenuOpen ? <X className="h-5 w-5 sm:h-6 sm:w-6" /> : <Menu className="h-5 w-5 sm:h-6 sm:w-6" />}
-            </button>
+              <AnimatePresence mode="wait">
+                {mobileMenuOpen ? (
+                  <motion.div
+                    key="close"
+                    initial={{ rotate: -90, opacity: 0 }}
+                    animate={{ rotate: 0, opacity: 1 }}
+                    exit={{ rotate: 90, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <X className="h-5 w-5 sm:h-6 sm:w-6" />
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="menu"
+                    initial={{ rotate: 90, opacity: 0 }}
+                    animate={{ rotate: 0, opacity: 1 }}
+                    exit={{ rotate: -90, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <Menu className="h-5 w-5 sm:h-6 sm:w-6" />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.button>
           </div>
         </div>
 
         {/* Mobile Menu */}
-        {mobileMenuOpen && (
-          <div className="md:hidden bg-slate-800 border-t border-slate-700">
-            <div className="px-4 py-2 space-y-2">
-              <Link href="/" className="block text-white hover:text-blue-400 transition-colors py-2">
-                Главная
-              </Link>
-              <Link href="/products" className="block text-white hover:text-blue-400 transition-colors py-2">
-                Каталог
-              </Link>
-              {authenticated && (
-                <Link href="/add-product" className="block text-white hover:text-blue-400 transition-colors py-2">
-                  Добавить товар
-                </Link>
-              )}
-              <Link href="/about" className="block text-white hover:text-blue-400 transition-colors py-2">
-                О нас
-              </Link>
-              <Link href="/contact" className="block text-white hover:text-blue-400 transition-colors py-2">
-                Контакты
-              </Link>
-              {authenticated ? (
-                <>
-                  <Link href="/profile" className="block text-white hover:text-blue-400 transition-colors py-2">
-                    Профиль
-                  </Link>
-                  <button
-                    onClick={handleLogout}
-                    className="block w-full text-left text-white hover:text-blue-400 transition-colors py-2"
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div
+              className="md:hidden bg-slate-800 border-t border-slate-700 overflow-hidden"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <motion.div
+                className="px-4 py-2 space-y-2"
+                initial="hidden"
+                animate="visible"
+                variants={{
+                  visible: {
+                    transition: {
+                      staggerChildren: 0.1,
+                    },
+                  },
+                }}
+              >
+                {[
+                  { href: '/', label: 'Главная' },
+                  { href: '/products', label: 'Каталог' },
+                  ...(authenticated ? [{ href: '/add-product', label: 'Добавить товар' }] : []),
+                  { href: '/about', label: 'О нас' },
+                  { href: '/contact', label: 'Контакты' },
+                ].map((item) => (
+                  <motion.div
+                    key={item.href}
+                    variants={{
+                      hidden: { x: -20, opacity: 0 },
+                      visible: { x: 0, opacity: 1 },
+                    }}
                   >
-                    Выйти
-                  </button>
-                </>
-              ) : (
-                <>
-                  <Link href="/login" className="block text-white hover:text-blue-400 transition-colors py-2">
-                    Вход
-                  </Link>
-                  <Link href="/register" className="block text-white hover:text-blue-400 transition-colors py-2">
-                    Регистрация
-                  </Link>
-                </>
-              )}
-            </div>
-          </div>
-        )}
+                    <Link
+                      href={item.href}
+                      className="block text-white hover:text-blue-400 transition-colors py-2"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      {item.label}
+                    </Link>
+                  </motion.div>
+                ))}
+                {authenticated ? (
+                  <>
+                    <motion.div
+                      variants={{
+                        hidden: { x: -20, opacity: 0 },
+                        visible: { x: 0, opacity: 1 },
+                      }}
+                    >
+                      <Link
+                        href="/profile"
+                        className="block text-white hover:text-blue-400 transition-colors py-2"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        Профиль
+                      </Link>
+                    </motion.div>
+                    <motion.div
+                      variants={{
+                        hidden: { x: -20, opacity: 0 },
+                        visible: { x: 0, opacity: 1 },
+                      }}
+                    >
+                      <button
+                        onClick={() => {
+                          handleLogout();
+                          setMobileMenuOpen(false);
+                        }}
+                        className="block w-full text-left text-white hover:text-blue-400 transition-colors py-2"
+                      >
+                        Выйти
+                      </button>
+                    </motion.div>
+                  </>
+                ) : (
+                  <>
+                    <motion.div
+                      variants={{
+                        hidden: { x: -20, opacity: 0 },
+                        visible: { x: 0, opacity: 1 },
+                      }}
+                    >
+                      <Link
+                        href="/login"
+                        className="block text-white hover:text-blue-400 transition-colors py-2"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        Вход
+                      </Link>
+                    </motion.div>
+                    <motion.div
+                      variants={{
+                        hidden: { x: -20, opacity: 0 },
+                        visible: { x: 0, opacity: 1 },
+                      }}
+                    >
+                      <Link
+                        href="/register"
+                        className="block text-white hover:text-blue-400 transition-colors py-2"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        Регистрация
+                      </Link>
+                    </motion.div>
+                  </>
+                )}
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
-    </header>
+    </motion.header>
   );
 }

@@ -4,7 +4,10 @@ import { useState } from 'react';
 import Image from "next/image";
 import Link from "next/link";
 import { Search, ChevronDown, ChevronUp, HelpCircle, BookOpen, MessageCircle, Phone, Mail, FileText, Settings, ShoppingCart, CreditCard, Truck, Shield } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Footer from '../../components/Footer';
+import { TextReveal } from '../../components/animations/TextReveal';
+import { GlareCard } from '../../components/animations/CardHover';
 
 export default function HelpPage() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -144,12 +147,16 @@ export default function HelpPage() {
       <section className="bg-gradient-to-r from-slate-900 via-blue-900 to-slate-900 py-12 sm:py-16 md:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 px-2">
-              Центр <span className="text-blue-400">помощи</span>
-            </h1>
-            <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-slate-300 mb-6 sm:mb-8 max-w-3xl mx-auto px-4">
-              Найдите ответы на ваши вопросы или свяжитесь с нашей службой поддержки
-            </p>
+            <TextReveal delay={0.2}>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 px-2">
+                Центр <span className="text-blue-400">помощи</span>
+              </h1>
+            </TextReveal>
+            <TextReveal delay={0.4}>
+              <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-slate-300 mb-6 sm:mb-8 max-w-3xl mx-auto px-4">
+                Найдите ответы на ваши вопросы или свяжитесь с нашей службой поддержки
+              </p>
+            </TextReveal>
           </div>
         </div>
       </section>
@@ -157,162 +164,286 @@ export default function HelpPage() {
       {/* Search Section */}
       <section className="py-8 bg-slate-800">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="relative">
+          <motion.div
+            className="relative"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400" />
-            <input
+            <motion.input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Поиск по вопросам и ответам..."
               className="w-full pl-12 pr-4 py-4 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              whileFocus={{ scale: 1.02 }}
+              transition={{ duration: 0.2 }}
             />
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Quick Help */}
       <section className="py-16 bg-slate-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Быстрая помощь</h2>
-            <p className="text-slate-300 text-lg">
-              Выберите нужный раздел для получения помощи
-            </p>
-          </div>
+          <TextReveal>
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold mb-4">Быстрая помощь</h2>
+              <p className="text-slate-300 text-lg">
+                Выберите нужный раздел для получения помощи
+              </p>
+            </div>
+          </TextReveal>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 md:gap-6">
-            <Link href="/contact" className="bg-slate-800 rounded-lg p-6 hover:bg-slate-700 transition-colors text-center">
-              <MessageCircle className="h-12 w-12 text-blue-400 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">Онлайн-чат</h3>
-              <p className="text-slate-300 text-sm">Быстрая помощь в реальном времени</p>
-            </Link>
-
-            <Link href="/contact" className="bg-slate-800 rounded-lg p-6 hover:bg-slate-700 transition-colors text-center">
-              <Phone className="h-12 w-12 text-blue-400 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">Телефон</h3>
-              <p className="text-slate-300 text-sm">+998(33)433-44-04</p>
-            </Link>
-
-            <Link href="/contact" className="bg-slate-800 rounded-lg p-6 hover:bg-slate-700 transition-colors text-center">
-              <Mail className="h-12 w-12 text-blue-400 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">Email</h3>
-              <p className="text-slate-300 text-sm">info@pcmarket.uz</p>
-            </Link>
-
-            <Link href="/delivery" className="bg-slate-800 rounded-lg p-6 hover:bg-slate-700 transition-colors text-center">
-              <FileText className="h-12 w-12 text-blue-400 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">Документы</h3>
-              <p className="text-slate-300 text-sm">Условия и договоры</p>
-            </Link>
-          </div>
+          <motion.div
+            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 md:gap-6"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={{
+              visible: {
+                transition: {
+                  staggerChildren: 0.15,
+                },
+              },
+            }}
+          >
+            {[
+              { icon: MessageCircle, title: 'Онлайн-чат', desc: 'Быстрая помощь в реальном времени', href: '/contact' },
+              { icon: Phone, title: 'Телефон', desc: '+998(33)433-44-04', href: '/contact' },
+              { icon: Mail, title: 'Email', desc: 'info@pcmarket.uz', href: '/contact' },
+              { icon: FileText, title: 'Документы', desc: 'Условия и договоры', href: '/delivery' },
+            ].map((item, index) => (
+              <motion.div
+                key={index}
+                variants={{
+                  hidden: { opacity: 0, y: 30 },
+                  visible: { opacity: 1, y: 0 },
+                }}
+                transition={{ duration: 0.5 }}
+              >
+                <GlareCard>
+                  <Link href={item.href} className="block bg-slate-800 rounded-lg p-6 hover:bg-slate-700 transition-colors text-center">
+                    <motion.div
+                      whileHover={{ rotate: 360, scale: 1.1 }}
+                      transition={{ duration: 0.5 }}
+                    >
+                      <item.icon className="h-12 w-12 text-blue-400 mx-auto mb-4" />
+                    </motion.div>
+                    <h3 className="text-lg font-semibold mb-2">{item.title}</h3>
+                    <p className="text-slate-300 text-sm">{item.desc}</p>
+                  </Link>
+                </GlareCard>
+              </motion.div>
+            ))}
+          </motion.div>
         </div>
       </section>
 
       {/* FAQ Section */}
       <section className="py-16 bg-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Часто задаваемые вопросы</h2>
-            <p className="text-slate-300 text-lg">
-              {searchTerm ? `Найдено результатов: ${filteredData.reduce((acc, cat) => acc + cat.questions.length, 0)}` : 'Выберите категорию для просмотра вопросов'}
-            </p>
-          </div>
-
-          <div className="space-y-6">
-            {filteredData.map((category) => (
-              <div key={category.id} className="bg-slate-700 rounded-lg overflow-hidden">
-                <button
-                  onClick={() => toggleExpanded(category.id)}
-                  className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-slate-600 transition-colors"
-                >
-                  <div className="flex items-center space-x-3">
-                    <category.icon className="h-6 w-6 text-blue-400" />
-                    <h3 className="text-xl font-semibold">{category.category}</h3>
-                    <span className="text-slate-400 text-sm">({category.questions.length})</span>
-                  </div>
-                  {expandedItems[category.id] ? (
-                    <ChevronUp className="h-5 w-5 text-slate-400" />
-                  ) : (
-                    <ChevronDown className="h-5 w-5 text-slate-400" />
-                  )}
-                </button>
-
-                {expandedItems[category.id] && (
-                  <div className="px-6 pb-4 space-y-4">
-                    {category.questions.map((item) => (
-                      <div key={item.id} className="border-l-2 border-blue-400 pl-4">
-                        <h4 className="font-semibold mb-2">{item.question}</h4>
-                        <p className="text-slate-300 text-sm leading-relaxed">{item.answer}</p>
-                      </div>
-                    ))}
-                  </div>  
-                )}
-              </div>
-            ))}
-          </div>
-
-          {filteredData.length === 0 && searchTerm && (
-            <div className="text-center py-12">
-              <HelpCircle className="h-16 w-16 text-slate-400 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold mb-2">Ничего не найдено</h3>
-              <p className="text-slate-300 mb-4">
-                Попробуйте изменить поисковый запрос или обратитесь в службу поддержки
-              </p>
-              <button
-                onClick={() => setSearchTerm('')}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors"
+          <TextReveal>
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold mb-4">Часто задаваемые вопросы</h2>
+              <motion.p
+                className="text-slate-300 text-lg"
+                key={searchTerm}
+                initial={{ scale: 1.1 }}
+                animate={{ scale: 1 }}
+                transition={{ duration: 0.3 }}
               >
-                Очистить поиск
-              </button>
+                {searchTerm ? `Найдено результатов: ${filteredData.reduce((acc, cat) => acc + cat.questions.length, 0)}` : 'Выберите категорию для просмотра вопросов'}
+              </motion.p>
             </div>
-          )}
+          </TextReveal>
+
+          <motion.div
+            className="space-y-6"
+            initial="hidden"
+            animate="visible"
+            variants={{
+              visible: {
+                transition: {
+                  staggerChildren: 0.1,
+                },
+              },
+            }}
+          >
+            {filteredData.map((category) => (
+              <motion.div
+                key={category.id}
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  visible: { opacity: 1, y: 0 },
+                }}
+                transition={{ duration: 0.4 }}
+              >
+                <GlareCard className="bg-slate-700 rounded-lg overflow-hidden">
+                  <motion.button
+                    onClick={() => toggleExpanded(category.id)}
+                    className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-slate-600 transition-colors"
+                    whileHover={{ x: 5 }}
+                  >
+                    <div className="flex items-center space-x-3">
+                      <motion.div
+                        animate={{ rotate: expandedItems[category.id] ? 360 : 0 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <category.icon className="h-6 w-6 text-blue-400" />
+                      </motion.div>
+                      <h3 className="text-xl font-semibold">{category.category}</h3>
+                      <span className="text-slate-400 text-sm">({category.questions.length})</span>
+                    </div>
+                    <AnimatePresence mode="wait">
+                      {expandedItems[category.id] ? (
+                        <motion.div
+                          key="up"
+                          initial={{ rotate: -180 }}
+                          animate={{ rotate: 0 }}
+                          exit={{ rotate: 180 }}
+                        >
+                          <ChevronUp className="h-5 w-5 text-slate-400" />
+                        </motion.div>
+                      ) : (
+                        <motion.div
+                          key="down"
+                          initial={{ rotate: 180 }}
+                          animate={{ rotate: 0 }}
+                          exit={{ rotate: -180 }}
+                        >
+                          <ChevronDown className="h-5 w-5 text-slate-400" />
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </motion.button>
+
+                  <AnimatePresence>
+                    {expandedItems[category.id] && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="overflow-hidden"
+                      >
+                        <div className="px-6 pb-4 space-y-4">
+                          {category.questions.map((item, index) => (
+                            <motion.div
+                              key={item.id}
+                              className="border-l-2 border-blue-400 pl-4"
+                              initial={{ opacity: 0, x: -20 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              transition={{ delay: index * 0.1 }}
+                            >
+                              <h4 className="font-semibold mb-2">{item.question}</h4>
+                              <p className="text-slate-300 text-sm leading-relaxed">{item.answer}</p>
+                            </motion.div>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </GlareCard>
+              </motion.div>
+            ))}
+          </motion.div>
+
+          <AnimatePresence>
+            {filteredData.length === 0 && searchTerm && (
+              <motion.div
+                className="text-center py-12"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.3 }}
+              >
+                <motion.div
+                  animate={{ rotate: [0, 10, -10, 0] }}
+                  transition={{ duration: 2, repeat: Infinity, repeatDelay: 2 }}
+                >
+                  <HelpCircle className="h-16 w-16 text-slate-400 mx-auto mb-4" />
+                </motion.div>
+                <h3 className="text-xl font-semibold mb-2">Ничего не найдено</h3>
+                <p className="text-slate-300 mb-4">
+                  Попробуйте изменить поисковый запрос или обратитесь в службу поддержки
+                </p>
+                <motion.button
+                  onClick={() => setSearchTerm('')}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  Очистить поиск
+                </motion.button>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </section>
 
       {/* Additional Resources */}
       <section className="py-16 bg-slate-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Дополнительные ресурсы</h2>
-            <p className="text-slate-300 text-lg">
-              Полезные материалы и инструкции
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div className="bg-slate-800 rounded-lg p-6">
-              <BookOpen className="h-12 w-12 text-blue-400 mb-4" />
-              <h3 className="text-xl font-semibold mb-3">Руководства пользователя</h3>
-              <p className="text-slate-300 mb-4">
-                Подробные инструкции по настройке и использованию оборудования
+          <TextReveal>
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold mb-4">Дополнительные ресурсы</h2>
+              <p className="text-slate-300 text-lg">
+                Полезные материалы и инструкции
               </p>
-              <Link href="/contact" className="text-blue-400 hover:text-blue-300 transition-colors">
-                Скачать руководства →
-              </Link>
             </div>
+          </TextReveal>
 
-            <div className="bg-slate-800 rounded-lg p-6">
-              <Settings className="h-12 w-12 text-blue-400 mb-4" />
-              <h3 className="text-xl font-semibold mb-3">Техническая документация</h3>
-              <p className="text-slate-300 mb-4">
-                Спецификации, схемы подключения и технические характеристики
-              </p>
-              <Link href="/contact" className="text-blue-400 hover:text-blue-300 transition-colors">
-                Открыть документацию →
-              </Link>
-            </div>
-
-            <div className="bg-slate-800 rounded-lg p-6">
-              <HelpCircle className="h-12 w-12 text-blue-400 mb-4" />
-              <h3 className="text-xl font-semibold mb-3">Видеоуроки</h3>
-              <p className="text-slate-300 mb-4">
-                Пошаговые видеоинструкции по сборке и настройке компьютеров
-              </p>
-              <Link href="/contact" className="text-blue-400 hover:text-blue-300 transition-colors">
-                Смотреть видео →
-              </Link>
-            </div>
-          </div>
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={{
+              visible: {
+                transition: {
+                  staggerChildren: 0.15,
+                },
+              },
+            }}
+          >
+            {[
+              { icon: BookOpen, title: 'Руководства пользователя', desc: 'Подробные инструкции по настройке и использованию оборудования', href: '/contact' },
+              { icon: Settings, title: 'Техническая документация', desc: 'Спецификации, схемы подключения и технические характеристики', href: '/contact' },
+              { icon: HelpCircle, title: 'Видеоуроки', desc: 'Пошаговые видеоинструкции по сборке и настройке компьютеров', href: '/contact' },
+            ].map((resource, index) => (
+              <motion.div
+                key={index}
+                variants={{
+                  hidden: { opacity: 0, y: 30 },
+                  visible: { opacity: 1, y: 0 },
+                }}
+                transition={{ duration: 0.5 }}
+              >
+                <GlareCard className="bg-slate-800 rounded-lg p-6">
+                  <resource.icon className="h-12 w-12 text-blue-400 mb-4" />
+                  <h3 className="text-xl font-semibold mb-3">{resource.title}</h3>
+                  <p className="text-slate-300 mb-4">{resource.desc}</p>
+                  <Link
+                    href={resource.href}
+                    className="text-blue-400 hover:text-blue-300 transition-colors inline-flex items-center group"
+                  >
+                    {resource.title === 'Руководства пользователя' && 'Скачать руководства'}
+                    {resource.title === 'Техническая документация' && 'Открыть документацию'}
+                    {resource.title === 'Видеоуроки' && 'Смотреть видео'}
+                    <motion.span
+                      className="ml-2"
+                      animate={{ x: [0, 5, 0] }}
+                      transition={{ duration: 1.5, repeat: Infinity }}
+                    >
+                      →
+                    </motion.span>
+                  </Link>
+                </GlareCard>
+              </motion.div>
+            ))}
+          </motion.div>
         </div>
       </section>
 

@@ -5,10 +5,13 @@ import { useSearchParams } from 'next/navigation';
 import Image from "next/image";
 import Link from "next/link";
 import { Search, Filter, Star } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Footer from '../../components/Footer';
 import { useCart } from '@/context/CartContext';
 import AddToCartModal from '../../components/modals/AddToCartModal';
 import AuthRequiredModal from '../../components/modals/AuthRequiredModal';
+import { GlareCard } from '../../components/animations/CardHover';
+import { TextReveal } from '../../components/animations/TextReveal';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
@@ -126,12 +129,31 @@ export default function ProductsPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 md:py-8">
         <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 md:gap-8">
           {/* Sidebar Filters */}
-          <div className="lg:w-1/4">
-            <div className="bg-slate-800 rounded-lg p-4 sm:p-5 md:p-6 lg:sticky lg:top-8">
-              <h3 className="text-lg font-semibold mb-4 flex items-center">
-                <Filter className="h-5 w-5 mr-2" />
+          <motion.div
+            className="lg:w-1/4"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <motion.div
+              className="bg-slate-800 rounded-lg p-4 sm:p-5 md:p-6 lg:sticky lg:top-8"
+              whileHover={{ boxShadow: '0 10px 40px rgba(59, 130, 246, 0.2)' }}
+              transition={{ duration: 0.3 }}
+            >
+              <motion.h3
+                className="text-lg font-semibold mb-4 flex items-center"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.2 }}
+              >
+                <motion.div
+                  animate={{ rotate: [0, 10, -10, 0] }}
+                  transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+                >
+                  <Filter className="h-5 w-5 mr-2" />
+                </motion.div>
                 Фильтры
-              </h3>
+              </motion.h3>
 
               {/* Search */}
               <div className="mb-6">
@@ -198,23 +220,38 @@ export default function ProductsPage() {
                 </select>
               </div>
 
-              <button
+              <motion.button
                 onClick={clearFilters}
                 className="w-full py-2 px-4 bg-slate-600 hover:bg-slate-500 text-white rounded-lg transition-colors"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
               >
                 Сбросить фильтры
-              </button>
-            </div>
-          </div>
+              </motion.button>
+            </motion.div>
+          </motion.div>
 
           {/* Products Grid */}
-          <div className="lg:w-3/4">
-            <div className="mb-4 sm:mb-5 md:mb-6">
-              <h1 className="text-2xl sm:text-3xl font-bold mb-2">Каталог товаров</h1>
-              <p className="text-slate-300 text-sm sm:text-base">
-                Найдено товаров: {products.length}
-              </p>
-            </div>
+          <motion.div
+            className="lg:w-3/4"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <TextReveal>
+              <div className="mb-4 sm:mb-5 md:mb-6">
+                <h1 className="text-2xl sm:text-3xl font-bold mb-2">Каталог товаров</h1>
+                <motion.p
+                  className="text-slate-300 text-sm sm:text-base"
+                  key={products.length}
+                  initial={{ scale: 1.2 }}
+                  animate={{ scale: 1 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  Найдено товаров: {products.length}
+                </motion.p>
+              </div>
+            </TextReveal>
 
             {loading ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
@@ -228,82 +265,140 @@ export default function ProductsPage() {
                 ))}
               </div>
             ) : products.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
-                {products.map((product) => (
-                  <div key={product.id} className="bg-slate-800 rounded-lg overflow-hidden hover:bg-slate-700 transition-colors">
-                    <Link href={`/products/${product.slug}`}>
-                      <div className="aspect-w-16 aspect-h-9 bg-slate-700">
-                        {product.image_url ? (
-                          <Image
-                            src={product.image_url}
-                            alt={product.name}
-                            width={300}
-                            height={200}
-                            className="w-full h-40 sm:h-44 md:h-48 object-cover"
-                          />
-                        ) : (
-                          <div className="w-full h-40 sm:h-44 md:h-48 bg-slate-700 flex items-center justify-center">
-                            <span className="text-slate-400 text-xs sm:text-sm">Нет изображения</span>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={selectedCategory + selectedType + sortBy + searchTerm}
+                  className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5 md:gap-6"
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  variants={{
+                    visible: {
+                      transition: {
+                        staggerChildren: 0.08,
+                      },
+                    },
+                    exit: {
+                      transition: {
+                        staggerChildren: 0.05,
+                        staggerDirection: -1,
+                      },
+                    },
+                  }}
+                >
+                  {products.map((product) => (
+                    <motion.div
+                      key={product.id}
+                      variants={{
+                        hidden: { opacity: 0, y: 20, scale: 0.9 },
+                        visible: { opacity: 1, y: 0, scale: 1 },
+                        exit: { opacity: 0, scale: 0.9 },
+                      }}
+                      transition={{ duration: 0.4 }}
+                    >
+                      <GlareCard className="bg-slate-800 rounded-lg overflow-hidden h-full flex flex-col">
+                        <Link href={`/products/${product.slug}`}>
+                          <motion.div
+                            className="aspect-w-16 aspect-h-9 bg-slate-700 relative overflow-hidden"
+                            whileHover={{ scale: 1.05 }}
+                            transition={{ duration: 0.3 }}
+                          >
+                            {product.image_url ? (
+                              <Image
+                                src={product.image_url}
+                                alt={product.name}
+                                width={300}
+                                height={200}
+                                className="w-full h-40 sm:h-44 md:h-48 object-cover"
+                              />
+                            ) : (
+                              <div className="w-full h-40 sm:h-44 md:h-48 bg-slate-700 flex items-center justify-center">
+                                <span className="text-slate-400 text-xs sm:text-sm">Нет изображения</span>
+                              </div>
+                            )}
+                          </motion.div>
+                        </Link>
+                        <div className="p-4 sm:p-5 md:p-6 flex-1 flex flex-col">
+                          <div className="flex items-center justify-between mb-2 flex-wrap gap-1 sm:gap-2">
+                            <motion.span
+                              className="text-xs bg-blue-600 text-white px-2 py-1 rounded"
+                              whileHover={{ scale: 1.1 }}
+                            >
+                              {product.product_type === 'computer' ? 'Компьютер' : 
+                               product.product_type === 'all-in-one' ? 'Моноблок' :
+                               product.product_type === 'component' ? 'Комплектующее' : 
+                               product.product_type === 'accessory' ? 'Аксессуар' : 'Другое'}
+                            </motion.span>
+                            <span className="text-xs text-slate-400">{product.category.name}</span>
                           </div>
-                        )}
-                      </div>
-                    </Link>
-                    <div className="p-4 sm:p-5 md:p-6">
-                      <div className="flex items-center justify-between mb-2 flex-wrap gap-1 sm:gap-2">
-                        <span className="text-xs bg-blue-600 text-white px-2 py-1 rounded">
-                          {product.product_type === 'computer' ? 'Компьютер' : 
-                           product.product_type === 'all-in-one' ? 'Моноблок' :
-                           product.product_type === 'component' ? 'Комплектующее' : 
-                           product.product_type === 'accessory' ? 'Аксессуар' : 'Другое'}
-                        </span>
-                        <span className="text-xs text-slate-400">{product.category.name}</span>
-                      </div>
-                      <Link href={`/products/${product.slug}`} className="hover:underline">
-                        <h3 className="text-base sm:text-lg font-semibold mb-2 line-clamp-2">{product.name}</h3>
-                      </Link>
-                      <p className="text-slate-400 text-xs sm:text-sm mb-2 sm:mb-3">{product.brand} {product.model}</p>
-                      <div className="flex items-center justify-between mb-3 sm:mb-4">
-                        <span className="text-lg sm:text-xl md:text-2xl font-bold text-blue-400">
-                          {product.price} USD
-                        </span>
-                        <div className="flex items-center text-yellow-400">
-                          <Star className="h-3 w-3 sm:h-4 sm:w-4 fill-current" />
-                          <span className="ml-1 text-xs sm:text-sm">4.8</span>
+                          <Link href={`/products/${product.slug}`} className="hover:underline">
+                            <h3 className="text-base sm:text-lg font-semibold mb-2 line-clamp-2">{product.name}</h3>
+                          </Link>
+                          <p className="text-slate-400 text-xs sm:text-sm mb-2 sm:mb-3">{product.brand} {product.model}</p>
+                          <div className="flex items-center justify-between mb-3 sm:mb-4">
+                            <motion.span
+                              className="text-lg sm:text-xl md:text-2xl font-bold text-blue-400"
+                              whileHover={{ scale: 1.1 }}
+                            >
+                              {product.price} USD
+                            </motion.span>
+                            <div className="flex items-center text-yellow-400">
+                              <Star className="h-3 w-3 sm:h-4 sm:w-4 fill-current" />
+                              <span className="ml-1 text-xs sm:text-sm">4.8</span>
+                            </div>
+                          </div>
+                          <motion.button
+                            onClick={() => handleAddToCart(product)}
+                            disabled={!product.is_in_stock}
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            className={`w-full py-2 sm:py-2.5 px-3 sm:px-4 rounded-lg font-semibold transition-colors text-sm sm:text-base ${
+                              product.is_in_stock
+                                ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                                : 'bg-slate-500 text-slate-300 cursor-not-allowed'
+                            }`}
+                          >
+                            {product.is_in_stock ? 'В корзину' : 'Нет в наличии'}
+                          </motion.button>
                         </div>
-                      </div>
-                      <button
-                        onClick={() => handleAddToCart(product)}
-                        disabled={!product.is_in_stock}
-                        className={`w-full py-2 sm:py-2.5 px-3 sm:px-4 rounded-lg font-semibold transition-colors text-sm sm:text-base ${
-                          product.is_in_stock
-                            ? 'bg-blue-600 hover:bg-blue-700 text-white'
-                            : 'bg-slate-500 text-slate-300 cursor-not-allowed'
-                        }`}
-                      >
-                        {product.is_in_stock ? 'В корзину' : 'Нет в наличии'}
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
+                      </GlareCard>
+                    </motion.div>
+                  ))}
+                </motion.div>
+              </AnimatePresence>
             ) : (
-              <div className="text-center py-8 sm:py-10 md:py-12 px-4">
-                <div className="bg-slate-800 rounded-lg p-6 sm:p-8">
-                  <Search className="h-12 w-12 sm:h-16 sm:w-16 text-slate-400 mx-auto mb-3 sm:mb-4" />
+              <motion.div
+                className="text-center py-8 sm:py-10 md:py-12 px-4"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5 }}
+              >
+                <motion.div
+                  className="bg-slate-800 rounded-lg p-6 sm:p-8"
+                  whileHover={{ scale: 1.02 }}
+                >
+                  <motion.div
+                    animate={{ rotate: [0, 10, -10, 0] }}
+                    transition={{ duration: 2, repeat: Infinity, repeatDelay: 2 }}
+                  >
+                    <Search className="h-12 w-12 sm:h-16 sm:w-16 text-slate-400 mx-auto mb-3 sm:mb-4" />
+                  </motion.div>
                   <h3 className="text-lg sm:text-xl font-semibold mb-2">Товары не найдены</h3>
                   <p className="text-slate-300 mb-4 text-sm sm:text-base">
                     Попробуйте изменить параметры поиска или фильтры
                   </p>
-                  <button
+                  <motion.button
                     onClick={clearFilters}
                     className="bg-blue-600 hover:bg-blue-700 text-white px-5 sm:px-6 py-2 rounded-lg transition-colors text-sm sm:text-base"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                   >
                     Сбросить фильтры
-                  </button>
-                </div>
-              </div>
+                  </motion.button>
+                </motion.div>
+              </motion.div>
             )}
-          </div>
+          </motion.div>
         </div>
       </div>
 

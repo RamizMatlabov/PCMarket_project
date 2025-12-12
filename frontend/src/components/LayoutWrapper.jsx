@@ -2,10 +2,13 @@
 
 import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
+import { motion } from 'framer-motion';
+import { usePathname } from 'next/navigation';
 
 const Navigation = dynamic(() => import('./Navigation'), { ssr: false });
 
 export default function LayoutWrapper({ children }) {
+  const pathname = usePathname();
   const [headerHeight, setHeaderHeight] = useState(0);
 
   useEffect(() => {
@@ -49,9 +52,16 @@ export default function LayoutWrapper({ children }) {
   return (
     <>
       <Navigation />
-      <main style={{ paddingTop: headerHeight }}>
+      <motion.main
+        style={{ paddingTop: headerHeight }}
+        key={pathname}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -20 }}
+        transition={{ duration: 0.4, ease: 'easeInOut' }}
+      >
         {children}
-      </main>
+      </motion.main>
     </>
   );
 }
