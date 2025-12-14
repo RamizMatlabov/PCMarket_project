@@ -151,7 +151,7 @@ export default function AboutPage() {
               >
                 <motion.div
                   className="bg-blue-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
-                  whileHover={{ rotate: 360, scale: 1.1 }}
+                  whileHover={{ scale: 1.1 }}
                   transition={{ duration: 0.6 }}
                 >
                   <value.icon className="h-8 w-8 text-white" />
@@ -205,7 +205,7 @@ export default function AboutPage() {
                 <GlareCard className="bg-slate-700 rounded-lg p-6 text-center">
                   <motion.div
                     className="w-24 h-24 bg-slate-600 rounded-full mx-auto mb-4 flex items-center justify-center"
-                    whileHover={{ scale: 1.1, rotate: 360 }}
+                    whileHover={{ scale: 1.1 }}
                     transition={{ duration: 0.6 }}
                   >
                     <team.icon className="h-12 w-12 text-slate-400" />

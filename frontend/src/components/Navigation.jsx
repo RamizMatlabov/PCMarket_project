@@ -140,8 +140,7 @@ export default function Navigation() {
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
             <motion.div
-              whileHover={{ rotate: [0, -10, 10, -10, 0] }}
-              transition={{ duration: 0.5 }}
+              whileHover={{ scale: 1.1 }}
             >
               <Image
                 src="/logo1.png"
@@ -263,8 +262,7 @@ export default function Navigation() {
             </div>
             <Link href="/cart" className="relative p-1.5 sm:p-2 text-white hover:text-blue-400 transition-colors">
               <motion.div
-                whileHover={{ scale: 1.1, rotate: [0, -10, 10, -10, 0] }}
-                transition={{ duration: 0.5 }}
+                whileHover={{ scale: 1.1}}
               >
                 <ShoppingCart className="h-5 w-5 sm:h-6 sm:w-6" />
               </motion.div>

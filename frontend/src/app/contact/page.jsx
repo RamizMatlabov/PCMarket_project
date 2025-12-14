@@ -89,13 +89,12 @@ export default function ContactPage() {
                     className="flex items-start space-x-4"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                    transition={{ duration: 0.3, }}
                     whileHover={{ x: 5 }}
                   >
                     <motion.div
                       className="bg-blue-600 w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0"
-                      whileHover={{ rotate: 360, scale: 1.1 }}
-                      transition={{ duration: 0.5 }}
+                      whileHover={{ scale: 1.1 }}
                     >
                       <contact.icon className="h-6 w-6 text-white" />
                     </motion.div>

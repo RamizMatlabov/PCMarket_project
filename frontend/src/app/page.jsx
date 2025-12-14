@@ -325,9 +325,9 @@ export default function Home() {
             }}
           >
             {[
-              { icon: ShoppingCart, title: 'Быстрая доставка', text: 'Доставляем заказы по всей Узбекистану в кратчайшие сроки' },
+              { icon: ShoppingCart, title: 'Быстрая доставка', text: 'Доставляем заказы по всей Узбекистану в кратчайшие сроки', noRotation: true },
               { icon: Star, title: 'Качество', text: 'Только оригинальные товары от проверенных производителей' },
-              { icon: Search, title: 'Поддержка', text: 'Квалифицированная техническая поддержка 24/7' },
+              { icon: Search, title: 'Поддержка', text: 'Квалифицированная техническая поддержка 24/7', noRotation: true },
             ].map((feature, index) => (
               <motion.div
                 key={index}
@@ -341,7 +341,7 @@ export default function Home() {
               >
                 <motion.div
                   className="bg-blue-600 w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4"
-                  whileHover={{ rotate: 360, scale: 1.1 }}
+                  whileHover={feature.noRotation ? { scale: 1.1 } : { rotate: 360, scale: 1.1 }}
                   transition={{ duration: 0.6 }}
                 >
                   <feature.icon className="h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 text-white" />
