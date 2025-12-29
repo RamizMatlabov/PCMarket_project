@@ -226,7 +226,7 @@ export default function HelpPage() {
                 <GlareCard>
                   <Link href={item.href} className="block bg-slate-800 rounded-lg p-6 hover:bg-slate-700 transition-colors text-center">
                     <motion.div
-                      whileHover={{ rotate: 360, scale: 1.1 }}
+                      whileHover={{ scale: 1.1 }}
                       transition={{ duration: 0.5 }}
                     >
                       <item.icon className="h-12 w-12 text-blue-400 mx-auto mb-4" />
@@ -288,7 +288,6 @@ export default function HelpPage() {
                   >
                     <div className="flex items-center space-x-3">
                       <motion.div
-                        animate={{ rotate: expandedItems[category.id] ? 360 : 0 }}
                         transition={{ duration: 0.3 }}
                       >
                         <category.icon className="h-6 w-6 text-blue-400" />
@@ -300,9 +299,7 @@ export default function HelpPage() {
                       {expandedItems[category.id] ? (
                         <motion.div
                           key="up"
-                          initial={{ rotate: -180 }}
                           animate={{ rotate: 0 }}
-                          exit={{ rotate: 180 }}
                         >
                           <ChevronUp className="h-5 w-5 text-slate-400" />
                         </motion.div>
