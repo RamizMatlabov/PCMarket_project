@@ -44,7 +44,7 @@ api.interceptors.response.use(
     if (!error.response) {
       console.error('Network error:', error.message);
       // Можно добавить уведомление пользователю о том, что сервер не доступен
-      return Promise.reject(new Error('Сервер не доступен. Убедитесь, что бэкенд запущен на http://localhost:8000'));
+      return Promise.reject(new Error('Сервер не доступен. Проверьте подключение к серверу.'));
     }
 
     if (error.response?.status === 401 && !originalRequest._retry) {

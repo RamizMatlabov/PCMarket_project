@@ -14,6 +14,8 @@ import { TextReveal } from '../components/animations/TextReveal';
 import { GlareCard } from '../components/animations/CardHover';
 import { HoverBorderGradient } from '../components/animations/ButtonAnimations';
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
 export default function Home() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -43,7 +45,7 @@ export default function Home() {
       
       // Если featured не сработал, используем прямой fetch как в products/page.jsx
       try {
-        const url = 'http://localhost:8000/api/products/products/?page_size=8';
+        const url = `${API_BASE_URL}/api/products/products/?page_size=8`;
         const response = await fetch(url);
         
         if (!response.ok) {
@@ -89,7 +91,7 @@ export default function Home() {
         status: error.response?.status,
         url: error.config?.url || error.response?.config?.url
       });
-      setError('Не удалось загрузить товары. Убедитесь, что сервер запущен на http://localhost:8000');
+      setError('Не удалось загрузить товары. Проверьте подключение к серверу.');
       setProducts([]);
     } finally {
       setLoading(false);

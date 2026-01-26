@@ -127,10 +127,15 @@ PCMarket_project/
 5. Рекомендуемые платформы: Railway, Render, Heroku
 
 ### Frontend (Next.js)
-1. Соберите проект: `npm run build`
-2. Запустите: `npm start`
-3. **Рекомендуется**: Разверните на [Vercel](https://vercel.com) (см. [VERCEL_DEPLOY.md](./VERCEL_DEPLOY.md))
-4. Настройте переменную окружения `NEXT_PUBLIC_API_URL` с URL вашего бэкенда
+1. Создайте файл `.env.local` в папке `frontend/`:
+   ```
+   NEXT_PUBLIC_API_URL=http://localhost:8000
+   ```
+2. Соберите проект: `npm run build`
+3. Запустите: `npm start`
+4. **Рекомендуется**: Разверните на [Vercel](https://vercel.com) (см. [VERCEL_DEPLOY.md](./VERCEL_DEPLOY.md))
+5. **Важно для продакшена**: Настройте переменную окружения `NEXT_PUBLIC_API_URL` в Vercel с URL вашего бэкенда (например, `https://your-backend.onrender.com`)
+6. Подробная инструкция по развертыванию: [frontend/DEPLOYMENT.md](./frontend/DEPLOYMENT.md)
 
 ## 📝 Лицензия
 

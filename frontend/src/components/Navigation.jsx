@@ -9,6 +9,8 @@ import { isAuthenticated, getCurrentUser, logout } from '@/utils/auth';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
 export default function Navigation() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [authenticated, setAuthenticated] = useState(false);
@@ -100,7 +102,7 @@ export default function Navigation() {
     const fetchSuggestions = async () => {
       try {
         setSuggestionsLoading(true);
-        const url = `http://localhost:8000/api/products/products/?search=${encodeURIComponent(q)}&page_size=20`;
+        const url = `${API_BASE_URL}/api/products/products/?search=${encodeURIComponent(q)}&page_size=20`;
         const res = await fetch(url);
         const data = await res.json();
         const items = Array.isArray(data) ? data : (data.results || []);

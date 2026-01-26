@@ -9,6 +9,8 @@ import { useCart } from '@/context/CartContext';
 import { isAuthenticated } from '@/utils/auth';
 import { useRouter } from 'next/navigation';
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+
 export default function CheckoutPage() {
   const { clearCart } = useCart();
   const router = useRouter();
@@ -140,7 +142,7 @@ export default function CheckoutPage() {
 
       console.log('Sending order data:', JSON.stringify(orderData, null, 2));
       
-      const response = await fetch('http://localhost:8000/api/orders/create-order/', {
+      const response = await fetch(`${API_BASE_URL}/api/orders/create-order/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
