@@ -30,6 +30,7 @@ ALLOWED_HOSTS = [
     "pcmarket-project.vercel.app",
     "localhost",
     "127.0.0.1",
+    "*",  # Временно для теста
 ]
 
 
@@ -134,26 +135,36 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# CORS settings
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-    "http://localhost:3001",
-    "http://127.0.0.1:3001",
-    "https://pcmarket-project.onrender.com",
-    "https://pcmarket-project.vercel.app",
-]
-
-# Разрешить все поддомены Vercel (для продакшена)
-# Это автоматически разрешит запросы с любого домена *.vercel.app
-CORS_ALLOWED_ORIGIN_REGEXES = [
-    r"^https://.*\.vercel\.app$",
-]
-
+# CORS settings - РАЗРЕШИТЬ ВСЕ ДОМЕНЫ (для продакшена)
+# Это временное решение для устранения проблемы CORS
+CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
+
+# Дополнительные CORS настройки
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
+
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
 
 CSRF_TRUSTED_ORIGINS = [
     "https://pcmarket-project.onrender.com",
+    "https://pcmarket-project.vercel.app",
 ]
 
 # REST Framework settings
