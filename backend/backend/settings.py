@@ -144,6 +144,12 @@ CORS_ALLOWED_ORIGINS = [
     "https://pcmarket-project.vercel.app",
 ]
 
+# Разрешить все поддомены Vercel (для продакшена)
+# Это автоматически разрешит запросы с любого домена *.vercel.app
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^https://.*\.vercel\.app$",
+]
+
 CORS_ALLOW_CREDENTIALS = True
 
 CSRF_TRUSTED_ORIGINS = [
